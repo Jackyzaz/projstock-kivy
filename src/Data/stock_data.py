@@ -16,3 +16,4 @@ class StockData:
 stock = StockData("NVDA")
 all_info= stock.get_stock_info()
 print("Stock Name: ",all_info["displayName"])
+print("Current Price:",all_info["currentPrice"],"USD" )
