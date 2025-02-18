@@ -7,49 +7,68 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from stock_chart_screen import StockChartScreen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Color, Rectangle
+from kivy.uix.widget import Widget
 
 
 class HomeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        layout = BoxLayout(orientation="vertical", padding=20, spacing=10)
+        main_layout = BoxLayout(orientation="vertical", padding=15, spacing=5)
 
         with self.canvas.before:
             Color(0.2, 0.2, 0.2, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
         self.bind(size=self.update_rect, pos=self.update_rect)
 
+        self.label = Label(
+            text="Stock Dashboard",
+            font_size=28,
+            color=(1, 1, 1, 1),
+            size_hint_y=None,
+            height=50,
+        )
+
+        def centered_widget(widget):
+            box = BoxLayout(orientation="horizontal")
+            box.add_widget(Widget(size_hint_x=1))
+            box.add_widget(widget)
+            box.add_widget(Widget(size_hint_x=1))
+            return box
+
         self.ticker_input = TextInput(
             hint_text="Enter Stock Symbol (e.g. AAPL)",
-            size_hint_y=None,
+            size_hint=(None, None),
+            width=300,
             height=40,
-            background_color=(1, 1, 1, 0.2),  # gray color
+            background_color=(1, 1, 1, 0.2),
             multiline=False,
         )
 
         self.time_period_spinner = Spinner(
             text="1d",
             values=["1d", "1wk", "1mo", "1y", "max"],
-            background_color=(0.3, 0.3, 0.3, 1),  # black color
-            size_hint_y=None,
+            size_hint=(None, None),
+            width=300,
             height=40,
+            background_color=(0.3, 0.3, 0.3, 1),
         )
 
         self.show_chart_button = Button(
             text="Show Chart",
-            size_hint_y=None,
+            size_hint=(None, None),
+            width=300,
             height=50,
-            background_color=(0, 0.6, 1, 1),  # blue color
+            background_color=(0, 0.6, 1, 1),
         )
 
-        self.label = Label(text="Stock Dashboard", font_size=28, color=(1, 1, 1, 1))
+        main_layout.add_widget(self.label)
+        main_layout.add_widget(Widget(size_hint_y=1))
+        main_layout.add_widget(centered_widget(self.ticker_input))
+        main_layout.add_widget(centered_widget(self.time_period_spinner))
+        main_layout.add_widget(centered_widget(self.show_chart_button))
+        main_layout.add_widget(Widget(size_hint_y=1))
 
-        layout.add_widget(self.label)
-        layout.add_widget(self.ticker_input)
-        layout.add_widget(self.time_period_spinner)
-        layout.add_widget(self.show_chart_button)
-        self.add_widget(layout)
+        self.add_widget(main_layout)
 
     def update_rect(self, *args):
         self.rect.size = self.size
