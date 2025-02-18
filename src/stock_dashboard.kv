@@ -1,0 +1,104 @@
+ScreenManager:
+    HomeScreen:
+    StockChartScreen:
+
+<HomeScreen>:
+    name: "home"
+    canvas.before:
+        Color:
+            rgba: 0.2, 0.2, 0.2, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        cols: 1
+        rows: 6
+        padding: [50, 20, 50, 20]
+        spacing: 15
+        size_hint: 1, 1
+
+        Label:
+            text: "Stock Dashboard"
+            font_size: 58
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 80
+
+        Widget:
+            size_hint_y: 1
+
+        TextInput:
+            id: ticker_input
+            hint_text: "Enter Stock Symbol (e.g. AAPL)"
+            size_hint_y: None
+            height: 80
+            background_color: 1, 1, 1, 0.2
+            multiline: False
+            font_size: 40
+
+        Spinner:
+            id: time_period_spinner
+            text: "1d"
+            values: ["1d", "1wk", "1mo", "1y", "max"]
+            size_hint_y: None
+            height: 80
+            background_color: 0.3, 0.3, 0.3, 1
+            font_size: 40
+
+        Widget:
+            size_hint_y: 1
+
+        Button:
+            text: "Show Chart"
+            size_hint_y: None
+            height: 100
+            background_color: 0, 0.6, 1, 1
+            font_size: 45
+            on_press: root.show_chart()
+
+<StockChartScreen>:
+    name: "stock_chart"
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    FloatLayout:  
+        BoxLayout:
+            orientation: "vertical"
+            padding: 20
+            spacing: 10
+            size_hint: 1, 1
+
+            Label:
+                id: chart_label
+                text: "Stock Chart"
+                font_size: 58
+                color: 1, 1, 1, 1
+                size_hint_y: None
+                height: 50
+
+            BoxLayout:
+                id: graph_widget
+                size_hint: 1, 0.8
+                padding: [15, 15, 15, 15]
+                opacity: 0
+
+            Button:
+                text: "Back"
+                size_hint_y: None
+                height: 50
+                background_color: 0.2, 0.2, 0.2, 1
+                font_size: 20
+                on_press: root.go_back()
+
+        Label:
+            id: loading_label
+            text: "Loading data..."
+            font_size: 32
+            color: 1, 1, 1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}  
+            opacity: 0  
