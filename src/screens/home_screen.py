@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
 from kivy.uix.widget import Widget
+from stock_chart_screen import StockChartScreen
 
 
 class HomeScreen(Screen):
@@ -58,6 +59,7 @@ class HomeScreen(Screen):
             height=100,
             background_color=(0, 0.6, 1, 1),
             font_size=45,
+            on_press=self.show_chart,
         )
 
         main_layout.add_widget(self.label)
@@ -73,11 +75,16 @@ class HomeScreen(Screen):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
+    def show_chart(self, instance):
+        stock_chart_screen = self.manager.get_screen("stock_chart")
+        self.manager.current = "stock_chart"
+
 
 class StockDashboardApp(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(HomeScreen(name="home"))
+        sm.add_widget(StockChartScreen(name="stock_chart"))
         return sm
 
 
