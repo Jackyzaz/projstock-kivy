@@ -1,4 +1,7 @@
-class StockChartScreen:
+from kivy.uix.screenmanager import Screen
+
+
+class StockChartScreen(Screen):
     def __init__(**kwargs):
         super().__init__(**kwargs)
 
