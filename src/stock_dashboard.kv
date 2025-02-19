@@ -30,12 +30,12 @@ ScreenManager:
 
         TextInput:
             id: ticker_input
-            hint_text: "Enter Stock Symbol (e.g. AAPL)"
+            hint_text: "Enter Stock..."
             size_hint_y: None
             height: 80
             background_color: 1, 1, 1, 0.2
             multiline: False
-            font_size: 40
+            font_size: 50
 
         Spinner:
             id: time_period_spinner
@@ -90,8 +90,8 @@ ScreenManager:
             Button:
                 text: "Back"
                 size_hint_y: None
-                height: 50
-                background_color: 0.2, 0.2, 0.2, 1
+                height: 70
+                background_color: 0, 0.6, 1, 1
                 font_size: 20
                 on_press: root.go_back()
 
