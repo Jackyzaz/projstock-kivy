@@ -11,7 +11,9 @@ class StockChartScreen(Screen):
     def on_enter(self):
         self.ids.graph_widget.opacity = 0
         self.ids.loading_label.opacity = 1
-        self.load_stock_data("AAPL", "1d")
+        ticker = getattr(self, "ticker", "AAPL")  # Default to "AAPL" if not set
+        time_period = getattr(self, "time_period", "1d")
+        self.load_stock_data(ticker, time_period)
 
     def load_stock_data(self, ticker, time_period):
         threading.Thread(

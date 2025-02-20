@@ -2,6 +2,53 @@ ScreenManager:
     HomeScreen:
     StockChartScreen:
 
+<RoundedButton@Button>:
+    background_disabled_normal: ''
+    background_color: 0, 0, 0, 0  
+    canvas.before:
+        Color:
+            rgba: 7/255,7/255,7/255,0.8
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [28,] 
+
+<RoundedButtonBack@Button>:
+    background_disabled_normal: ''
+    background_color: 0, 0, 0, 0  
+    canvas.before:
+        Color:
+            rgba: 67/255, 67/255, 67/255, 0.8
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [28,] 
+
+
+<RoundedSpinner@Spinner>:
+    background_normal: ''  
+    background_color: 0, 0, 0, 0  
+    canvas.before:
+        Color:
+            rgba: 0.3, 0.3, 0.3, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [12,]
+
+<RoundedTextInput@TextInput>:
+    background_normal: ''  
+    background_color: 0, 0, 0, 0  
+    hint_text_color: 7/255, 7/255, 0.7, 1
+    canvas.before:
+        Color:
+            rgba: 10, 10, 10, 0.2
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [12,]
+
+
 <HomeScreen>:
     name: "home"
     canvas.before:
@@ -24,38 +71,38 @@ ScreenManager:
             color: 1, 1, 1, 1
             size_hint_y: None
             height: 80
+            font_name: "data/fonts/Roboto-Bold.ttf"
 
         Widget:
             size_hint_y: 1
 
-        TextInput:
+        RoundedTextInput:
             id: ticker_input
-            hint_text: "Enter Stock Symbol (e.g. AAPL)"
-            size_hint_y: None
-            height: 80
-            background_color: 1, 1, 1, 0.2
+            hint_text: "Enter Stock..."
+            size_hint: (1,0.35)
+            background_disabled_normal: ''
+            color: 0, 0, 0, 0.8
             multiline: False
-            font_size: 40
+            font_size: 36
 
-        Spinner:
+        RoundedSpinner:
             id: time_period_spinner
             text: "1d"
             values: ["1d", "1wk", "1mo", "1y", "max"]
-            size_hint_y: None
-            height: 80
-            background_color: 0.3, 0.3, 0.3, 1
+            size_hint: (1,0.3)
+            background_disabled_normal: ''
             font_size: 40
 
         Widget:
             size_hint_y: 1
 
-        Button:
+        RoundedButton:
             text: "Show Chart"
-            size_hint_y: None
-            height: 100
-            background_color: 0, 0.6, 1, 1
+            size_hint: (1,0.4)
             font_size: 45
             on_press: root.show_chart()
+            background_disabled_normal: ''
+           
 
 <StockChartScreen>:
     name: "stock_chart"
@@ -70,7 +117,7 @@ ScreenManager:
         BoxLayout:
             orientation: "vertical"
             padding: 20
-            spacing: 10
+            spacing: 15
             size_hint: 1, 1
 
             Label:
@@ -80,6 +127,7 @@ ScreenManager:
                 color: 1, 1, 1, 1
                 size_hint_y: None
                 height: 50
+                font_name: "data/fonts/Roboto-Bold.ttf"
 
             BoxLayout:
                 id: graph_widget
@@ -87,12 +135,12 @@ ScreenManager:
                 padding: [15, 15, 15, 15]
                 opacity: 0
 
-            Button:
+            RoundedButtonBack:
                 text: "Back"
-                size_hint_y: None
-                height: 50
-                background_color: 0.2, 0.2, 0.2, 1
-                font_size: 20
+                size_hint: (1,0.1)
+                background_color: 0, 0, 0, 0
+                background_disabled_normal: ''
+                font_size: 40
                 on_press: root.go_back()
 
         Label:
