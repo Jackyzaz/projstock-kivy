@@ -25,7 +25,9 @@ class StockChartScreen(Screen):
         Clock.schedule_once(lambda dt: self.update_ui(data, ticker, time_period))
 
     def update_ui(self, data, ticker, time_period):
-        self.ids.chart_label.text = f"Stock Chart for {ticker} ({time_period})"
+        self.ids.chart_label.text = (
+            f"Real Time Stock Dashboard for {ticker} ({time_period})"
+        )
         self.update_graph(data)
         self.ids.loading_label.opacity = 0
         self.ids.graph_widget.opacity = 1

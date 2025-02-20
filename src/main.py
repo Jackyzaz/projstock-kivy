@@ -3,6 +3,9 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
 from screens.home_screen import HomeScreen
 from screens.stock_chart_screen import StockChartScreen
+from kivy.core.window import Window
+
+Window.size = (1280, 720)
 
 
 class StockDashboardApp(App):
