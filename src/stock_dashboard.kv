@@ -60,9 +60,9 @@ ScreenManager:
 
     GridLayout:
         cols: 1
-        rows: 6
+        rows: 8
         padding: [50, 20, 50, 20]
-        spacing: 15
+        spacing: 20
         size_hint: 1, 1
 
         Label:
@@ -73,32 +73,66 @@ ScreenManager:
             height: 80
             font_name: "data/fonts/Roboto-Bold.ttf"
 
-        Widget:
+        Widget:  
             size_hint_y: 1
+
+        Label:
+            text: "Ticker"
+            font_size: 30
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 20
+            font_name: "data/fonts/Roboto-Bold.ttf"
 
         RoundedTextInput:
             id: ticker_input
             hint_text: "Enter Stock..."
-            size_hint: (1,0.35)
+            size_hint: (1,0.45)
             background_disabled_normal: ''
             color: 0, 0, 0, 0.8
             multiline: False
             font_size: 36
 
-        RoundedSpinner:
-            id: time_period_spinner
-            text: "1d"
-            values: ["1d", "1wk", "1mo", "1y", "max"]
-            size_hint: (1,0.3)
-            background_disabled_normal: ''
-            font_size: 40
+        Label:
+            text: "Parameters"
+            font_size: 30
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 20
+            font_name: "data/fonts/Roboto-Bold.ttf"
 
-        Widget:
+        GridLayout:
+            cols: 2
+            rows: 1
+            spacing: 10
+            size_hint: 0.5, 0.4
+
+
+
+            RoundedSpinner:
+                id: time_period_spinner
+                text: "1d"
+                values: ["1d", "1wk", "1mo", "1y", "max"]
+                size_hint: (1,0.2)
+                background_disabled_normal: ''
+                font_size: 40
+
+
+            RoundedSpinner:
+                id: technical_indicator_spinner
+                text: "SMA 20"
+                values: ["SMA 20", "EMA 20" ]
+                size_hint: (1,0.2)
+                background_disabled_normal: ''
+                font_size: 40
+
+
+        Widget:  
             size_hint_y: 1
 
         RoundedButton:
             text: "Show Chart"
-            size_hint: (1,0.4)
+            size_hint: (1,0.5)
             font_size: 45
             on_press: root.show_chart()
             background_disabled_normal: ''
