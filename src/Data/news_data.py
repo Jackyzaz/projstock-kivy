@@ -1,4 +1,5 @@
 import yfinance as yf
+from datetime import datetime
 
 def fetch_stock_news(ticker):
     stock = yf.Ticker(ticker)
@@ -9,8 +10,6 @@ def fetch_stock_news(ticker):
 
     return news_list
     
-
 news_data = fetch_stock_news("NVDA")
-
-for news in news_data:
-    print(news)
+for x in news_data:
+    print(x)
