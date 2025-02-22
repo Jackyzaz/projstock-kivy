@@ -12,7 +12,7 @@ def fetch_stock_data(ticker, period, interval):
         data = yf.download(ticker, period=period, interval=interval)
     return data
 
-def process_data(data):
+def process_timezone(data):
     if data.empty:
         print("⚠️ No data retrieved. Check ticker, internet connection, or rate limits.")
         return data
@@ -24,6 +24,10 @@ def process_data(data):
     data.rename(columns={'Date': 'Datetime'}, inplace=True)
     return data
 
-data = fetch_stock_data("NVDA","1wk","1h")
-data = process_data(data)
-print(data)  
+def get_data(name, period, interval):
+    data = fetch_stock_data(name, period, interval)
+    data = process_timezone(data)
+    return data
+
+data = get_data("NVDA", "1wk", "1h")
+print(data.head()) 
