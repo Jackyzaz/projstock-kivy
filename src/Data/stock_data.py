@@ -29,5 +29,5 @@ def get_data(name, period, interval):
     data = process_timezone(data)
     return data
 
-data = get_data("NVDA", "1wk", "1h")
+data = get_data("AAPL", "1wk", "1h")
 print(data.head()) 

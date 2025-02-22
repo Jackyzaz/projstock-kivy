@@ -1,5 +1,6 @@
 import yfinance as yf
 from datetime import datetime
+import json 
 
 def fetch_stock_news(ticker):
     stock = yf.Ticker(ticker)
@@ -11,13 +12,13 @@ def fetch_stock_news(ticker):
     formatted_news = []
 
     for news in news_list:
+        print(news)
         content = news.get("content", {})
         thumbnail = content.get("thumbnail", {})
         title = content.get("title", {})
         summary = content.get("summary", {})
         pubDate = content.get("pubDate",{})
         dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
-        
         formatted_news.append({
         "thumbnail": thumbnail,
         "title": title,
