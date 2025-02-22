@@ -10,3 +10,5 @@ pandas
 numpy
 mplfinance
 matplotlib
+yfinance
+datetime
