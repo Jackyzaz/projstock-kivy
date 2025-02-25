@@ -1,117 +1,66 @@
-<RoundedButton@Button>:
-    background_disabled_normal: ''
-    background_color: 0, 0, 0, 0  
-    canvas.before:
-        Color:
-            rgba: 7/255,7/255,7/255,0.8
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [22,] 
-
-<RoundedSpinner@Spinner>:
-    background_normal: ''  
-    background_color: 0, 0, 0, 0  
-    canvas.before:
-        Color:
-            rgba: 0.3, 0.3, 0.3, 1
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [12,]
-
-<RoundedTextInput@TextInput>:
-    background_normal: ''  
-    background_color: 0, 0, 0, 0  
-    hint_text_color: 7/255, 7/255, 0.7, 1
-    canvas.before:
-        Color:
-            rgba: 10, 10, 10, 0.2
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [12,]
-
 <HomeScreen>:
-    name: "home"
-    canvas.before:
-        Color:
-            rgba: 0.2, 0.2, 0.2, 1
-        Rectangle:
-            size: self.size
-            pos: self.pos
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(15)
+        spacing: dp(15)
+        md_bg_color: 0.1, 0.1, 0.1, 1  # พื้นหลังสีเข้ม
 
-    GridLayout:
-        cols: 1
-        rows: 8
-        padding: [50, 20, 50, 20]
-        spacing: 20
-        size_hint: 1, 1
+        # ส่วน Header + ข่าว
+        MDBoxLayout:
+            size_hint_y: 0.4
+            spacing: dp(15)
 
-        Label:
-            text: "Stock Dashboard"
-            font_size: "58sp"
-            color: 1, 1, 1, 1
-            size_hint_y: None
-            height: 80
-            font_name: "data/fonts/Roboto-Bold.ttf"
+            # Header Box (ด้านซ้าย)
+            MDBoxLayout:
+                size_hint_x: 0.3
+                md_bg_color: 0.3, 0.3, 0.3, 1
+                radius: [10, 10, 10, 10]
+                elevation: 10
+                orientation: "vertical"
+                MDBoxLayout:
+                    size_hint_y: 0.6
+                    radius: [10, 10, 0, 0]  
+                    elevation: 8
+                    orientation: "vertical"
+                    MDLabel:
+                        text: "Stock"
+                        text_color: 1, 1, 1, 1
+                        bold: True
+                        font_style: "Display"
+                        role:"small"
+                        halign: "center"
 
-        Widget:  
-            size_hint_y: 1
+                    MDLabel:
+                        text: "Date ../../.."
+                        halign: "center"
+                        font_style: "Custom"
+                        font_size: "30sp"
+                        text_color: 1, 1, 1, 1
 
-        Label:
-            text: "Ticker"
-            font_size: "30sp"
-            color: 1, 1, 1, 1
-            size_hint_y: None
-            height: 20
-            font_name: "data/fonts/Roboto-Bold.ttf"
+                MDBoxLayout:
+                    size_hint_y: 0.4
+                  
 
-        RoundedTextInput:
-            id: ticker_input
-            hint_text: "Enter Stock..."
-            size_hint: (1,0.45)
-            background_disabled_normal: ''
-            color: 0, 0, 0, 0.8
-            multiline: False
-            font_size: 36
+            # ข่าว (ด้านขวา)
+            MDBoxLayout:
+                size_hint_x: 0.7
+                md_bg_color: 0.3, 0.3, 0.3, 1
+                radius: [10, 10, 10, 10]
+                elevation: 10
+                MDLabel:
+                    text: "News Section"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
 
-        Label:
-            text: "Parameters"
-            font_size: "30sp"
-            color: 1, 1, 1, 1
-            size_hint_y: None
-            height: 20
-            font_name: "data/fonts/Roboto-Bold.ttf"
-
-        GridLayout:
-            cols: 2
-            rows: 1
-            spacing: 10
-            size_hint: 0.5, 0.4
-
-            RoundedSpinner:
-                id: time_period_spinner
-                text: "1d"
-                values: ["1d", "1wk", "1mo", "1y", "max"]
-                size_hint: (1,0.2)
-                background_disabled_normal: ''
-                font_size: "40sp"
-
-            RoundedSpinner:
-                id: technical_indicator_spinner
-                text: "SMA 20"
-                values: ["SMA 20", "EMA 20" ]
-                size_hint: (1,0.2)
-                background_disabled_normal: ''
-                font_size: "40sp"
-
-        Widget:  
-            size_hint_y: 1
-
-        RoundedButton:
-            text: "Show Chart"
-            size_hint: (1,0.5)
-            font_size: "45sp"
-            on_press: root.show_chart()
-            background_disabled_normal: ''
+        # ส่วนตารางหุ้น
+        MDBoxLayout:
+            size_hint_y: 0.6
+            md_bg_color: 0.3, 0.3, 0.3, 1
+            radius: [10, 10, 10, 10]
+            elevation: 10
+            MDLabel:
+                text: "Stock Table"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1

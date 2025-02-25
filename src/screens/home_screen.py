@@ -1,17 +1,21 @@
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ObjectProperty
+from kivy.lang import Builder
+from kivymd.app import MDApp
+import os
+
+KV_FILE = os.path.join(os.path.dirname(__file__), "HomeScreen.kv")
 
 
 class HomeScreen(Screen):
+    pass
 
-    def show_chart(self):
-        ticker = self.ids.ticker_input.text
-        time_period = self.ids.time_period_spinner.text
-        print(f"Ticker : {ticker} \nTime period : {time_period}")
-        stock_chart_screen = self.manager.get_screen("stock_chart")
-        stock_chart_screen.ticker = ticker
-        stock_chart_screen.time_period = time_period
 
-        self.ids.time_period_spinner.text = "1d"
-        self.ids.ticker_input.text = ""
-        self.manager.current = "stock_chart"
+class TestApp(MDApp):
+    def build(self):
+        self.theme_cls.primary_palette = "Blue"
+        self.theme_cls.theme_style = "Dark"
+        return Builder.load_file(KV_FILE) or HomeScreen()
+
+
+if __name__ == "__main__":
+    TestApp().run()
