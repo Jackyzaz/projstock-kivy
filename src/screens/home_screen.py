@@ -1,74 +1,127 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from src.data.stock_data import get_data, get_multiple_data
+
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivymd.uix.datatables import MDDataTable
+from kivy.clock import Clock
+from kivymd.uix.label import MDLabel
+from kivy.uix.boxlayout import BoxLayout
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Home_ScreenApp(MDApp):
     def build(self):
-        return Builder.load_file("HomeScreen.kv")
-
-    def on_start(self):
-        stock_data = [
-            (
-                "Dow Jones",
-                "$490.82",
-                "$385.25",
-                "$421.27",
-                "-1.23",
-                "2.4%",
-                "43,428.02",
-            ),
-            ("S&P 500", "$225.87", "$124.87", "$171.48", "12.53", "5.8%", "6,013.13"),
-            ("AAPL", "$1008.57", "$750.28", "$903.56", "7.56", "8.7%", "245.55"),
-            ("BA", "$275.30", "$154.45", "$175.48", "-8.47", "8.8%", "177.15"),
-            ("BRK-B", "$225.87", "$124.87", "$200.48", "0.98", "1.58%", "478.74"),
-            ("DIS", "$1008.57", "$750.28", "$903.56", "7.56", "8.7%", "108.66"),
-            ("S&P 500", "$225.87", "$124.87", "$171.48", "12.53", "5.8%", "6,013.13"),
-            ("AAPL", "$1008.57", "$750.28", "$903.56", "7.56", "8.7%", "245.55"),
-            ("BA", "$275.30", "$154.45", "$175.48", "-8.47", "8.8%", "177.15"),
-            ("BRK-B", "$225.87", "$124.87", "$200.48", "0.98", "1.58%", "478.74"),
-            ("DIS", "$1008.57", "$750.28", "$903.56", "7.56", "8.7%", "108.66"),
-        ]
-        stock_table = MDDataTable(
-            background_color=(0.3, 0.3, 0.3, 1),
-            pos_hint={"center_x": 0.5, "center_y": 0.5},
-            size_hint=(1, 1),
-            column_data=[
-                ("Company Name", dp(55)),
-                ("High", dp(40)),
-                ("Low", dp(40)),
-                ("Prev Close", dp(40)),
-                ("Change", dp(40)),
-                ("Gain", dp(40)),
-                ("5 Day Performance", dp(55)),
-            ],
-            row_data=[
-                (
-                    f"[b]{name}[/b]\n[i]{name} Inc.[/i]",
-                    high,
-                    low,
-                    prev,
-                    f"[color={self.get_color(change)}]{change}[/color]",
-                    f"[color={self.get_color(gain)}]{gain}[/color]",
-                    performance,
-                )
-                for name, high, low, prev, change, gain, performance in stock_data
-            ],
-            check=True,
-        )
-
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
 
-        self.root.ids.stock_table_box.add_widget(stock_table)
+        # ✅ โหลด UI และให้มันแสดงผลก่อน
+        self.layout = Builder.load_file("HomeScreen.kv")
+
+        # ✅ แสดงข้อความ "กำลังโหลดข้อมูล..." ก่อน
+        self.loading_label = MDLabel(
+            text="กำลังโหลดข้อมูล...", halign="center", theme_text_color="Secondary"
+        )
+        self.layout.ids.stock_table_box.add_widget(self.loading_label)
+
+        return self.layout  # ✅ ให้ UI แสดงผลก่อนโหลดข้อมูล
+
+    def on_start(self):
+        # ✅ ใช้ Clock เพื่อให้ UI แสดงผลก่อน แล้วค่อยโหลดข้อมูลหลัง 0.5 วินาที
+        Clock.schedule_once(self.start_loading, 0.5)
+
+    def start_loading(self, *args):
+        """เริ่มโหลดข้อมูลแบบ Async"""
+        Clock.schedule_once(self.update_stock_table, 0)
+
+    def load_stock_data(self):
+        """โหลดข้อมูลหุ้น"""
+        stock_list = [
+            "AAPL",
+            "GOOGL",
+            "MSFT",
+            "AMZN",
+            "TSLA",
+            "NFLX",
+            "NVDA",
+            "FB",
+            "BABA",
+        ]
+        stock_data = get_multiple_data(stock_list, "5d", "1h")
+
+        self.row_data = []
+        for stock, data in stock_data.items():
+            latest_data = data.iloc[-1]
+            close_prices = data["Close"].dropna()
+
+            if len(close_prices) > 1:
+                start_price = close_prices.iloc[0].item()
+                end_price = close_prices.iloc[-1].item()
+                avg_return = ((end_price - start_price) / start_price) * 100
+            else:
+                avg_return = 0.00
+
+            change = latest_data["Close"].iloc[0] - latest_data["Open"].iloc[0]
+            gain = (change / latest_data["Open"].iloc[0]) * 100
+
+            self.row_data.append(
+                (
+                    stock,
+                    f"${latest_data['High'].iloc[0]:.2f}",
+                    f"${latest_data['Low'].iloc[0]:.2f}",
+                    f"${latest_data['Close'].iloc[0]:.2f}",
+                    f"[color={self.get_color(change)}]{change:.2f}[/color]",
+                    f"[color={self.get_color(gain)}]{gain:.2f}%[/color]",
+                    f"[color={self.get_color(avg_return)}]{avg_return:.2f}%[/color]",
+                )
+            )
+
+        self.stock_table = MDDataTable(
+            background_color_header="#000000",
+            rows_num=len(self.row_data),
+            size_hint=(1, None),
+            height=dp(50) * (len(self.row_data) + 2),
+            pos_hint={"center_x": 0.5},
+            column_data=[
+                ("Company Name", dp(50)),
+                ("High", dp(38)),
+                ("Low", dp(38)),
+                ("Prev Close", dp(43)),
+                ("Change", dp(43)),
+                ("Gain", dp(43)),
+                ("5 Day Avg", dp(48)),
+            ],
+            row_data=self.row_data,
+        )
+
+    def update_stock_table(self, *args):
+        """อัปเดตตารางหุ้น"""
+        self.load_stock_data()  # ✅ โหลดข้อมูลก่อน
+
+        # ✅ ตรวจสอบว่ามี stock_table_box หรือไม่
+        if hasattr(self.root.ids, "stock_table_box"):
+            self.root.ids.stock_table_box.clear_widgets()  # ✅ ลบข้อความ "กำลังโหลดข้อมูล..."
+            self.root.ids.stock_table_box.add_widget(self.stock_table)  # ✅ เพิ่มตาราง
+        else:
+            print("Error: ไม่พบ stock_table_box ใน .kv")
 
     def get_color(self, value):
+        """คืนค่าเป็นสีเขียวถ้าบวก, แดงถ้าลบ, และขาวถ้าเป็น 0"""
         try:
-            return "00FF00" if float(value) > 0 else "FF0000"
+            value = float(value)
+            if value > 0:
+                return "00FF00"  # สีเขียว
+            elif value < 0:
+                return "FF0000"  # สีแดง
+            else:
+                return "FFFFFF"  # สีขาว
         except:
-            return "FFFFFF"
+            return "FFFFFF"  # สีขาว กรณีผิดพลาด
 
 
-if __name__ == "__main__":
-    Home_ScreenApp().run()
+Home_ScreenApp().run()

@@ -40,9 +40,16 @@ MDScreen:
         # ตารางข้อมูลหุ้น
         ScrollView:
             size_hint_y: 0.6
-            bar_width: dp(8)
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
             do_scroll_x: False
             do_scroll_y: False
             id: stock_table_box
-            size_hint_x: 1
             adaptive_height: True
+            md_bg_color: 0.3, 0.3, 0.3, 1
+            canvas.before:
+                Color:
+                    rgba: 0.3, 0.3, 0.3, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
