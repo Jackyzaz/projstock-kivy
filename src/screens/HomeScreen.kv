@@ -3,7 +3,7 @@ MDScreen:
         orientation: "vertical"
         padding: dp(15)
         spacing: dp(15)
-        md_bg_color: 0.3, 0.3, 0.3, 1
+        md_bg_color: 0.2, 0.2, 0.2, 1  
 
         # ส่วน Header + ข่าว
         MDBoxLayout:
@@ -14,7 +14,7 @@ MDScreen:
             MDBoxLayout:
                 id: stock_box
                 size_hint_x: 0.3
-                size_hint_y: 1  # ✅ ขยายเต็มแนวตั้ง
+                size_hint_y: 1  
                 md_bg_color: 0.1, 0.1, 0.1, 1
                 radius: [10, 10, 10, 10]
                 elevation: 10
@@ -27,7 +27,7 @@ MDScreen:
                     text: "Stock"
                     font_style: "Caption"
                     halign: "center"
-                    font_size: "40sp"
+                    font_size: "50sp"
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
                     size_hint_y: 0.5
@@ -36,19 +36,25 @@ MDScreen:
                 MDLabel:
                     id: stock_datetime
                     text: "Updating..."
-                    font_style: "H5"
+                    font_style: "H6"
                     halign: "center"
                     theme_text_color: "Hint"
-                    font_size: "30sp"
+                    font_size: "23sp"
                     size_hint_y: 0.6
                     height: self.texture_size[1] + dp(10)
 
-                # MDRaisedButton:
-                #     text: "Refresh"
-                #     pos_hint: {"center_x": 0.5}
-                #     on_release: app.refresh_data()
-
-
+                MDRaisedButton: 
+                    text: "Refresh"
+                    pos_hint: {"center_x": 0.5}
+                    size_hint_y: None
+                    height: dp(20)
+                    md_bg_color: 0.2, 0.2, 0.2, 1  
+                    text_color: 1, 1, 1, 1 
+                    elevation: 4  
+                    theme_text_color: "Custom"
+                    font_size: "18sp"  
+                    radius: [20, 20, 20, 20]  
+                    on_release: app.refresh_data()
 
             # ข่าว (ด้านขวา)
             MDBoxLayout:
@@ -60,11 +66,11 @@ MDScreen:
                 elevation: 10
                 padding: dp(10)
 
-
         # ตารางข้อมูลหุ้น
         ScrollView:
             size_hint_y: 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            radius: [10, 10, 10, 10]
             do_scroll_x: False
             do_scroll_y: False
             id: stock_table_box
@@ -76,4 +82,3 @@ MDScreen:
                 Rectangle:
                     pos: self.pos
                     size: self.size
-
