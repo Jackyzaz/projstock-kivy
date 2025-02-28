@@ -12,17 +12,43 @@ MDScreen:
 
             # Header Box (ด้านซ้าย)
             MDBoxLayout:
+                id: stock_box
                 size_hint_x: 0.3
-                md_bg_color: 0.1, 0.1, 0.1, 1  
+                size_hint_y: 1  # ✅ ขยายเต็มแนวตั้ง
+                md_bg_color: 0.1, 0.1, 0.1, 1
                 radius: [10, 10, 10, 10]
                 elevation: 10
                 orientation: "vertical"
+                spacing: dp(5)
+                padding: dp(15)
+                minimum_height: dp(100)
+
                 MDLabel:
                     text: "Stock"
-                    font_style: "H5"
+                    font_style: "Caption"
                     halign: "center"
+                    font_size: "40sp"
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
+                    size_hint_y: 0.5
+                    height: self.texture_size[1] + dp(10)
+
+                MDLabel:
+                    id: stock_datetime
+                    text: "Updating..."
+                    font_style: "H5"
+                    halign: "center"
+                    theme_text_color: "Hint"
+                    font_size: "30sp"
+                    size_hint_y: 0.6
+                    height: self.texture_size[1] + dp(10)
+
+                # MDRaisedButton:
+                #     text: "Refresh"
+                #     pos_hint: {"center_x": 0.5}
+                #     on_release: app.refresh_data()
+
+
 
             # ข่าว (ด้านขวา)
             MDBoxLayout:

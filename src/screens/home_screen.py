@@ -54,7 +54,15 @@ class Home_ScreenApp(MDApp):
     def on_start(self):
         Clock.schedule_once(self.show_loading_label, 0)
         Clock.schedule_once(self.start_loading, 0.5)
+        Clock.schedule_once(self.show_news_loading_label, 0)
         Clock.schedule_once(self.load_latest_news, 1)
+        Clock.schedule_interval(self.update_datetime, 1)
+
+    def update_datetime(self, dt):
+        """อัปเดตวันที่และเวลาใน Stock Box"""
+        if hasattr(self.root.ids, "stock_datetime"):
+            now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            self.root.ids.stock_datetime.text = f"Updated: {now}"
 
     def show_loading_label(self, *args):
         """แสดงข้อความ 'กำลังโหลดข้อมูล...'"""
@@ -143,6 +151,20 @@ class Home_ScreenApp(MDApp):
             self.root.ids.stock_table_box.clear_widgets()
             self.root.ids.stock_table_box.add_widget(self.stock_table)
 
+    def show_news_loading_label(self, *args):
+        """แสดงข้อความ 'Loading news...' ก่อนโหลดข่าว"""
+        if hasattr(self.root.ids, "latest_news_box"):
+            self.loading_news_label = MDLabel(
+                text="Loading news...",
+                halign="center",
+                theme_text_color="Secondary",
+                font_style="H5",
+            )
+            self.root.ids.latest_news_box.clear_widgets()
+            self.root.ids.latest_news_box.add_widget(self.loading_news_label)
+
+        Clock.schedule_once(self.load_latest_news, 1)
+
     def load_latest_news(self, *args):
         """โหลดข่าวและแสดงให้เต็ม latest_news_box"""
         news_data = fetch_stock_news()
@@ -159,6 +181,7 @@ class Home_ScreenApp(MDApp):
             do_scroll_y=True,
         )
 
+        # ✅ Layout หลักของข่าว
         news_layout = MDBoxLayout(
             orientation="vertical",
             spacing=dp(10),
@@ -226,6 +249,13 @@ class Home_ScreenApp(MDApp):
             return "00FF00" if value > 0 else "FF0000"
         except:
             return "FFFFFF"
+
+    def refresh_data(self):
+        """โหลดข้อมูลใหม่และแสดง Loading"""
+        self.show_loading_label()
+        self.show_news_loading_label()
+        Clock.schedule_once(self.update_stock_table, 1)
+        Clock.schedule_once(self.load_latest_news, 1)
 
 
 Home_ScreenApp().run()
