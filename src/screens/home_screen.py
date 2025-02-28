@@ -20,23 +20,28 @@ class Home_ScreenApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
 
-        # ✅ โหลด UI และให้มันแสดงผลก่อน
         self.layout = Builder.load_file("HomeScreen.kv")
 
-        # ✅ แสดงข้อความ "กำลังโหลดข้อมูล..." ก่อน
-        self.loading_label = MDLabel(
-            text="กำลังโหลดข้อมูล...", halign="center", theme_text_color="Secondary"
-        )
-        self.layout.ids.stock_table_box.add_widget(self.loading_label)
-
-        return self.layout  # ✅ ให้ UI แสดงผลก่อนโหลดข้อมูล
+        return self.layout
 
     def on_start(self):
-        # ✅ ใช้ Clock เพื่อให้ UI แสดงผลก่อน แล้วค่อยโหลดข้อมูลหลัง 0.5 วินาที
+        Clock.schedule_once(self.show_loading_label, 0)
         Clock.schedule_once(self.start_loading, 0.5)
 
+    def show_loading_label(self, *args):
+        """แสดงข้อความ 'กำลังโหลดข้อมูล...'"""
+        if hasattr(self.root.ids, "stock_table_box"):
+            self.loading_label = MDLabel(
+                text="Loading stock data...",
+                halign="center",
+                theme_text_color="Secondary",
+                font_style="H5",
+            )
+            self.root.ids.stock_table_box.clear_widgets()
+            self.root.ids.stock_table_box.add_widget(self.loading_label)
+
     def start_loading(self, *args):
-        """เริ่มโหลดข้อมูลแบบ Async"""
+        """เริ่มโหลดข้อมูลหลังจาก 0.5 วินาที"""
         Clock.schedule_once(self.update_stock_table, 0)
 
     def load_stock_data(self):
@@ -101,14 +106,14 @@ class Home_ScreenApp(MDApp):
 
     def update_stock_table(self, *args):
         """อัปเดตตารางหุ้น"""
-        self.load_stock_data()  # ✅ โหลดข้อมูลก่อน
+        self.load_stock_data()
+        Clock.schedule_once(self.replace_table, 0.2)
 
-        # ✅ ตรวจสอบว่ามี stock_table_box หรือไม่
+    def replace_table(self, *args):
+        """แทนที่ข้อความ 'กำลังโหลดข้อมูล...' ด้วยตาราง"""
         if hasattr(self.root.ids, "stock_table_box"):
-            self.root.ids.stock_table_box.clear_widgets()  # ✅ ลบข้อความ "กำลังโหลดข้อมูล..."
-            self.root.ids.stock_table_box.add_widget(self.stock_table)  # ✅ เพิ่มตาราง
-        else:
-            print("Error: ไม่พบ stock_table_box ใน .kv")
+            self.root.ids.stock_table_box.clear_widgets()
+            self.root.ids.stock_table_box.add_widget(self.stock_table)
 
     def get_color(self, value):
         """คืนค่าเป็นสีเขียวถ้าบวก, แดงถ้าลบ, และขาวถ้าเป็น 0"""
