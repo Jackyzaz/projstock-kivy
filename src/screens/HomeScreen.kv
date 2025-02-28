@@ -3,7 +3,7 @@ MDScreen:
         orientation: "vertical"
         padding: dp(15)
         spacing: dp(15)
-        md_bg_color: 0.1, 0.1, 0.1, 1  
+        md_bg_color: 0.3, 0.3, 0.3, 1
 
         # ส่วน Header + ข่าว
         MDBoxLayout:
@@ -13,7 +13,7 @@ MDScreen:
             # Header Box (ด้านซ้าย)
             MDBoxLayout:
                 size_hint_x: 0.3
-                md_bg_color: 0.3, 0.3, 0.3, 1
+                md_bg_color: 0.1, 0.1, 0.1, 1  
                 radius: [10, 10, 10, 10]
                 elevation: 10
                 orientation: "vertical"
@@ -26,16 +26,14 @@ MDScreen:
 
             # ข่าว (ด้านขวา)
             MDBoxLayout:
+                id: latest_news_box
                 size_hint_x: 0.7
-                md_bg_color: 0.3, 0.3, 0.3, 1
+                size_hint_y: 1  
+                md_bg_color: 0.1, 0.1, 0.1, 1 
                 radius: [10, 10, 10, 10]
                 elevation: 10
-                MDLabel:
-                    text: "Latest News"
-                    font_style: "H6"
-                    halign: "center"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
+                padding: dp(10)
+
 
         # ตารางข้อมูลหุ้น
         ScrollView:
@@ -45,10 +43,10 @@ MDScreen:
             do_scroll_y: False
             id: stock_table_box
             adaptive_height: True
-            md_bg_color: 0.3, 0.3, 0.3, 1
+            md_bg_color: 0.1, 0.1, 0.1, 1 
             canvas.before:
                 Color:
-                    rgba: 0.3, 0.3, 0.3, 1
+                    rgba: 0.1, 0.1, 0.1, 1 
                 Rectangle:
                     pos: self.pos
                     size: self.size

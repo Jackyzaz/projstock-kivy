@@ -2,31 +2,59 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from src.data.stock_data import get_data, get_multiple_data
-
+from src.data.stock_data import get_multiple_data
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivymd.uix.datatables import MDDataTable
 from kivy.clock import Clock
 from kivymd.uix.label import MDLabel
-from kivy.uix.boxlayout import BoxLayout
-import numpy as np
-import matplotlib.pyplot as plt
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
+import yfinance as yf
+from datetime import datetime
+from kivy.uix.scrollview import ScrollView
+
+
+def fetch_stock_news(ticker="NVDA"):
+    """ดึงข่าวจาก yfinance"""
+    stock = yf.Ticker(ticker)
+    news_list = stock.get_news()
+
+    if not news_list:
+        return []
+
+    formatted_news = []
+    for news in news_list[:4]:
+        content = news.get("content", {})
+        title = content.get("title", "No Title")
+        summary = content.get("summary", "No Summary")
+        pubDate = content.get("pubDate", "")
+
+        try:
+            dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
+            formatted_date = dt_obj.strftime("%d/%m/%Y %H:%M:%S")
+        except:
+            formatted_date = "Unknown Date"
+
+        formatted_news.append(
+            {"title": title, "summary": summary, "pubDate": formatted_date}
+        )
+
+    return formatted_news
 
 
 class Home_ScreenApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
-
         self.layout = Builder.load_file("HomeScreen.kv")
-
         return self.layout
 
     def on_start(self):
         Clock.schedule_once(self.show_loading_label, 0)
         Clock.schedule_once(self.start_loading, 0.5)
+        Clock.schedule_once(self.load_latest_news, 1)
 
     def show_loading_label(self, *args):
         """แสดงข้อความ 'กำลังโหลดข้อมูล...'"""
@@ -115,18 +143,89 @@ class Home_ScreenApp(MDApp):
             self.root.ids.stock_table_box.clear_widgets()
             self.root.ids.stock_table_box.add_widget(self.stock_table)
 
+    def load_latest_news(self, *args):
+        """โหลดข่าวและแสดงให้เต็ม latest_news_box"""
+        news_data = fetch_stock_news()
+        if not hasattr(self.root.ids, "latest_news_box"):
+            print("Error: latest_news_box ไม่พบใน .kv")
+            return
+
+        latest_news_box = self.root.ids.latest_news_box
+        latest_news_box.clear_widgets()
+
+        scroll_view = ScrollView(
+            size_hint=(1, 1),
+            do_scroll_x=False,
+            do_scroll_y=True,
+        )
+
+        news_layout = MDBoxLayout(
+            orientation="vertical",
+            spacing=dp(10),
+            size_hint_y=None,
+            adaptive_height=True,
+        )
+
+        for news in news_data:
+            news_card = MDCard(
+                size_hint_x=1,
+                size_hint_y=None,
+                height=dp(120),
+                padding=dp(10),
+                md_bg_color=(0.2, 0.2, 0.2, 1),
+                radius=[10],
+                elevation=5,
+            )
+            news_box = MDBoxLayout(
+                orientation="vertical",
+                size_hint_y=None,
+                adaptive_height=True,
+            )
+
+            title_label = MDLabel(
+                text=news["title"],
+                font_style="H6",
+                theme_text_color="Primary",
+                size_hint_y=None,
+                height=dp(30),
+                shorten=True,
+                shorten_from="right",
+            )
+
+            summary_label = MDLabel(
+                text=news["summary"],
+                theme_text_color="Secondary",
+                size_hint_y=None,
+                height=dp(50),
+                max_lines=3,
+                shorten=True,
+                shorten_from="right",
+            )
+
+            date_label = MDLabel(
+                text=news["pubDate"],
+                theme_text_color="Hint",
+                size_hint_y=None,
+                height=dp(20),
+                font_style="Caption",
+            )
+
+            news_box.add_widget(title_label)
+            news_box.add_widget(summary_label)
+            news_box.add_widget(date_label)
+            news_card.add_widget(news_box)
+            news_layout.add_widget(news_card)
+
+        scroll_view.add_widget(news_layout)
+        latest_news_box.add_widget(scroll_view)
+
     def get_color(self, value):
         """คืนค่าเป็นสีเขียวถ้าบวก, แดงถ้าลบ, และขาวถ้าเป็น 0"""
         try:
             value = float(value)
-            if value > 0:
-                return "00FF00"  # สีเขียว
-            elif value < 0:
-                return "FF0000"  # สีแดง
-            else:
-                return "FFFFFF"  # สีขาว
+            return "00FF00" if value > 0 else "FF0000"
         except:
-            return "FFFFFF"  # สีขาว กรณีผิดพลาด
+            return "FFFFFF"
 
 
 Home_ScreenApp().run()
