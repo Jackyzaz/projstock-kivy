@@ -41,5 +41,5 @@ def get_multiple_data(tickers, period, interval):
             if not data.empty:
                 all_data[ticker] = data
         except YFPricesMissingError:
-            print(f"⚠️ No data found for {ticker}. It may be delisted.")
+            print(f"No data found for {ticker}. It may be delisted.")
     return all_data
