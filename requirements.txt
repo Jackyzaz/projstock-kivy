@@ -6,7 +6,7 @@ kivy_deps.angle
 kivy
 Kivy-Garden
 kivy_garden.matplotlib @ https://github.com/kivy-garden/matplotlib/archive/master.zip
-git+https://github.com/kivymd/KivyMD.git@master
+kivyMD==1.1.1
 pandas
 numpy
 mplfinance
