@@ -2,13 +2,17 @@
 MDScreen:
     MDBoxLayout:
         orientation: 'vertical'
+        # adaptive_height: True
+   
+        
+        # size: self.minimum_size
+            
         spacing: dp(10)
         padding: dp(10)
         MDLabel:
             text: "News\n" + datetime.today().strftime('%d %B')
-            font_style: "H5"
-            bold: True
-            theme_text_color: "Primary"
+            # halign: "center"
+            valign: "top"
         MDLabel:
             text: "Dow Jones Industrial Average"
             font_style: "H6"
