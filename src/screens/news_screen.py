@@ -17,65 +17,13 @@ from kivy.uix.scrollview import ScrollView
 import pandas as pd
 
 
-def fetch_stock_news(tickers=None):
-    """ดึงข่าวจาก yfinance ของหลายหุ้น"""
-    if tickers is None:
-        tickers = ["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"]
-
-    formatted_news = []
-
-    for ticker in tickers:
-        try:
-            stock = yf.Ticker(ticker)
-            news_list = stock.get_news()
-        except Exception:
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": "Failed to Load News",
-                    "summary": "Please try again.",
-                    "pubDate": "-",
-                }
-            )
-            continue
-
-        if not news_list:
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": "No News Available",
-                    "summary": "No recent news found.",
-                    "pubDate": "-",
-                }
-            )
-            continue
-
-        for news in news_list[:3]:
-            content = news.get("content", {})
-            title = content.get("title", "No Title")
-            summary = content.get("summary", "No Summary")
-            pubDate = content.get("pubDate", "-")
-
-            try:
-                dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
-                formatted_date = dt_obj.strftime("%d/%m/%Y %H:%M:%S")
-            except:
-                formatted_date = "Unknown Date"
-
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": title,
-                    "summary": summary,
-                    "pubDate": formatted_date,
-                }
-            )
-
-    return formatted_news
-
-
 class News_ScreenApp(MDApp):
-    pass
+    def build(self):
+        self.theme_cls.primary_palette = "Blue"
+        self.theme_cls.theme_style = "Dark"
+        self.layout = Builder.load_file("NewsScreen.kv")
+        self.row_data = []
+        return self.layout
 
 
 News_ScreenApp().run()

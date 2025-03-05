@@ -1,3 +1,31 @@
-
+#:import datetime datetime.datetime
 MDScreen:
-    
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: dp(10)
+        padding: dp(10)
+        MDLabel:
+            text: "News\n" + datetime.today().strftime('%d %B')
+            font_style: "H5"
+            bold: True
+            theme_text_color: "Primary"
+        MDLabel:
+            text: "Dow Jones Industrial Average"
+            font_style: "H6"
+            theme_text_color: "Secondary"
+        MDLabel:
+            text: "43,428.02  -748.63"
+            font_style: "H5"
+            theme_text_color: "Error"
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: dp(10)
+            OneLineListItem:
+                text: "New York Stock Market: Dow Jones closes down 748.63 points on concerns about the economy and tariffs"
+            OneLineListItem:
+                text: "The Dow Jones continues to fall, recently plunging more than 400 points, falling below the 44,000 level."
+            OneLineListItem:
+                text: "Dow Jones plunges more than 300 points, falls below 44,000, United Health shares"
+        MDRaisedButton:
+            text: "More about Dow Jones"
+            pos_hint: {"center_x": 0.5}
