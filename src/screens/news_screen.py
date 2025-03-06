@@ -20,12 +20,13 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.list import OneLineListItem
 
-
-# เปลี่ยนจาก class MDApp เป็น MDScreen
 class NewsScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def build(self):
-        self.layout = Builder.load_file("NewsScreen.kv")
-        return self.layout
+    
+#test click
+    def on_button_click(self):
+        print("Button clicked in News Screen!")
+
+

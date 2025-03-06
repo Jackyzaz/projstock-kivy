@@ -4,7 +4,8 @@ from kivymd.uix.screenmanager import MDScreenManager
 from news_screen import NewsScreen
 from home_screen import HomeScreen
 
-
+Builder.load_file('NewsScreen.kv')
+Builder.load_file('HomeScreen.kv')
 
 class MainApp(MDApp):
     def build(self):
