@@ -16,167 +16,115 @@ from datetime import datetime
 import pandas as pd
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.card import MDCard
+from kivy.uix.screenmanager import Screen
+
+KV_PATH = os.path.join(os.path.dirname(__file__), "HomeScreen.kv")
+Builder.load_file(KV_PATH)
 
 
+def fetch_stock_news(ticker="NVDA"):
+    """ดึงข่าวจาก yfinance"""
+    stock = yf.Ticker(ticker)
+    news_list = stock.get_news()
 
-def fetch_stock_news(tickers=None):
-    """ดึงข่าวจาก yfinance ของหลายหุ้น"""
-    if tickers is None:
-        tickers = ["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"]
+    if not news_list:
+        return []
 
     formatted_news = []
-    for ticker in tickers:
+    for news in news_list[:4]:
+        content = news.get("content", {})
+        title = content.get("title", "No Title")
+        summary = content.get("summary", "No Summary")
+        pubDate = content.get("pubDate", "")
+
         try:
-            stock = yf.Ticker(ticker)
-            news_list = stock.get_news()
-        except Exception:
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": "Failed to Load News",
-                    "summary": "Please try again.",
-                    "pubDate": "-",
-                }
-            )
-            continue
+            dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
+            formatted_date = dt_obj.strftime("%d/%m/%Y %H:%M:%S")
+        except:
+            formatted_date = "Unknown Date"
 
-        if not news_list:
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": "No News Available",
-                    "summary": "No recent news found.",
-                    "pubDate": "-",
-                }
-            )
-            continue
-
-        for news in news_list[:3]:
-            content = news.get("content", {})
-            title = content.get("title", "No Title")
-            summary = content.get("summary", "No Summary")
-            pubDate = content.get("pubDate", "-")
-
-            try:
-                dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
-                formatted_date = dt_obj.strftime("%d/%m/%Y %H:%M:%S")
-            except:
-                formatted_date = "Unknown Date"
-
-            formatted_news.append(
-                {
-                    "ticker": ticker,
-                    "title": title,
-                    "summary": summary,
-                    "pubDate": formatted_date,
-                }
-            )
+        formatted_news.append(
+            {"title": title, "summary": summary, "pubDate": formatted_date}
+        )
 
     return formatted_news
 
 
-class HomeScreen(MDScreen):
+class HomeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.row_data = []
 
-    def on_start(self):
+    def on_enter(self):
         Clock.schedule_once(self.show_loading_label, 0)
-        Clock.schedule_once(self.show_news_loading_label, 0)
         Clock.schedule_once(self.start_loading, 0.5)
+        Clock.schedule_once(self.show_news_loading_label, 0)
         Clock.schedule_once(self.load_latest_news, 1)
         Clock.schedule_interval(self.update_datetime, 1)
 
     def update_datetime(self, dt):
         """อัปเดตวันที่และเวลาใน Stock Box"""
-        if hasattr(self.root.ids, "stock_datetime"):
+        if hasattr(self.ids, "stock_datetime"):
             now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            self.root.ids.stock_datetime.text = f"Updated: {now}"
+            self.ids.stock_datetime.text = f"Updated: {now}"
 
     def show_loading_label(self, *args):
-        """แสดง 'Loading stock data...'"""
-        if hasattr(self.root.ids, "stock_table_box"):
-            self.root.ids.stock_table_box.clear_widgets()
+        """แสดงข้อความ 'กำลังโหลดข้อมูล...'"""
+        if hasattr(self.ids, "stock_table_box"):
             self.loading_label = MDLabel(
                 text="Loading stock data...",
                 halign="center",
                 theme_text_color="Secondary",
                 font_style="H5",
             )
-            self.root.ids.stock_table_box.add_widget(self.loading_label)
+            self.ids.stock_table_box.clear_widgets()
+            self.ids.stock_table_box.add_widget(self.loading_label)
 
     def start_loading(self, *args):
-        """เริ่มโหลดข้อมูล"""
+        """เริ่มโหลดข้อมูลหลังจาก 0.5 วินาที"""
         Clock.schedule_once(self.update_stock_table, 0)
 
     def load_stock_data(self):
         """โหลดข้อมูลหุ้น"""
-        stock_list = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NFLX", "NVDA", "BABA"]
-        try:
-            stock_data = get_multiple_data(stock_list, "5d", "1h")
-        except Exception:
-            self.row_data = [("Failed to Load Data", "-", "-", "-", "-", "-", "-")]
-            return
-
-        if not stock_data:
-            self.row_data = [("No Stock Data Available", "-", "-", "-", "-", "-", "-")]
-            return
+        stock_list = [
+            "AAPL",
+            "GOOGL",
+            "MSFT",
+            "AMZN",
+            "TSLA",
+            "NFLX",
+            "NVDA",
+            "FB",
+            "BABA",
+        ]
+        stock_data = get_multiple_data(stock_list, "5d", "1d")
 
         self.row_data = []
         for stock, data in stock_data.items():
-            if data.empty:
-                continue
-
-            latest_data = data.iloc[-1]  # latest_data คือล่าสุดของ DataFrame
-
-            try:
-                high = latest_data["High"]
-                low = latest_data["Low"]
-                close = latest_data["Close"]
-                open_price = latest_data["Open"]
-
-                # ถ้าเป็น Series (มีแค่ 1 ค่า), ใช้ .item() เพื่อดึงค่ามาเป็น float
-                if isinstance(high, pd.Series):
-                    high = high.item()
-                if isinstance(low, pd.Series):
-                    low = low.item()
-                if isinstance(close, pd.Series):
-                    close = close.item()
-                if isinstance(open_price, pd.Series):
-                    open_price = open_price.item()
-
-            except KeyError:
-                continue
-
-            change = close - open_price
-            gain = (change / open_price) * 100 if open_price != 0 else 0
-
+            latest_data = data.iloc[-1]
             close_prices = data["Close"].dropna()
+
             if len(close_prices) > 1:
-                start_price = close_prices.iloc[0]
-
-                # เช็คและแปลงค่า start_price เหมือนกัน
-                if isinstance(start_price, pd.Series):
-                    start_price = start_price.item()
-
-                avg_return = ((close - start_price) / start_price) * 100
+                start_price = close_prices.iloc[0].item()
+                end_price = close_prices.iloc[-1].item()
+                avg_return = ((end_price - start_price) / start_price) * 100
             else:
                 avg_return = 0.00
+
+            change = latest_data["Close"].iloc[0] - latest_data["Open"].iloc[0]
+            gain = (change / latest_data["Open"].iloc[0]) * 100
 
             self.row_data.append(
                 (
                     stock,
-                    f"${high:.2f}",
-                    f"${low:.2f}",
-                    f"${close:.2f}",
+                    f"${latest_data['High'].iloc[0]:.2f}",
+                    f"${latest_data['Low'].iloc[0]:.2f}",
+                    f"${latest_data['Close'].iloc[0]:.2f}",
                     f"[color={self.get_color(change)}]{change:.2f}[/color]",
                     f"[color={self.get_color(gain)}]{gain:.2f}%[/color]",
                     f"[color={self.get_color(avg_return)}]{avg_return:.2f}%[/color]",
                 )
             )
-
-        if not self.row_data:
-            self.row_data = [("No Stock Data Available", "-", "-", "-", "-", "-", "-")]
 
         self.stock_table = MDDataTable(
             background_color_header="#000000",
@@ -200,33 +148,33 @@ class HomeScreen(MDScreen):
         Clock.schedule_once(self.replace_table, 0.2)
 
     def replace_table(self, *args):
-        """แทนที่ loading ด้วยตาราง"""
-        if hasattr(self.root.ids, "stock_table_box"):
-            self.root.ids.stock_table_box.clear_widgets()
-            self.root.ids.stock_table_box.add_widget(self.stock_table)
+        """แทนที่ข้อความ 'กำลังโหลดข้อมูล...' ด้วยตาราง"""
+        if hasattr(self.ids, "stock_table_box"):
+            self.ids.stock_table_box.clear_widgets()
+            self.ids.stock_table_box.add_widget(self.stock_table)
 
     def show_news_loading_label(self, *args):
         """แสดงข้อความ 'Loading news...' ก่อนโหลดข่าว"""
-        if hasattr(self.root.ids, "latest_news_box"):
+        if hasattr(self.ids, "latest_news_box"):
             self.loading_news_label = MDLabel(
                 text="Loading news...",
                 halign="center",
                 theme_text_color="Secondary",
                 font_style="H5",
             )
-            self.root.ids.latest_news_box.clear_widgets()
-            self.root.ids.latest_news_box.add_widget(self.loading_news_label)
+            self.ids.latest_news_box.clear_widgets()
+            self.ids.latest_news_box.add_widget(self.loading_news_label)
 
         Clock.schedule_once(self.load_latest_news, 1)
 
     def load_latest_news(self, *args):
         """โหลดข่าวและแสดงให้เต็ม latest_news_box"""
-        news_data = fetch_stock_news(["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"])
-        if not hasattr(self.root.ids, "latest_news_box"):
+        news_data = fetch_stock_news()
+        if not hasattr(self.ids, "latest_news_box"):
             print("Error: latest_news_box ไม่พบใน .kv")
             return
 
-        latest_news_box = self.root.ids.latest_news_box
+        latest_news_box = self.ids.latest_news_box
         latest_news_box.clear_widgets()
 
         scroll_view = ScrollView(
@@ -252,11 +200,10 @@ class HomeScreen(MDScreen):
                 radius=[10],
                 elevation=5,
             )
-
             news_box = MDBoxLayout(
                 orientation="vertical",
                 size_hint_y=None,
-                padding=(dp(10), dp(5)),
+                adaptive_height=True,
             )
 
             title_label = MDLabel(
@@ -309,7 +256,4 @@ class HomeScreen(MDScreen):
         self.show_loading_label()
         self.show_news_loading_label()
         Clock.schedule_once(self.update_stock_table, 1)
-        Clock.schedule_once(
-            lambda dt: self.load_latest_news(["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"]),
-            1,
-        )
+        Clock.schedule_once(self.load_latest_news, 1)
