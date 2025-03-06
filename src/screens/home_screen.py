@@ -5,16 +5,17 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 from src.Data.stock_data import get_multiple_data
 from kivy.lang import Builder
 from kivy.metrics import dp
-from kivymd.app import MDApp
-from kivymd.uix.datatables import MDDataTable
-from kivy.clock import Clock
+from kivymd.uix.screen import MDScreen
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.card import MDCard
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.datatables import MDDataTable
+from kivy.clock import Clock
 import yfinance as yf
 from datetime import datetime
-from kivy.uix.scrollview import ScrollView
 import pandas as pd
+from kivy.uix.scrollview import ScrollView
+from kivymd.uix.card import MDCard
 
 
 def fetch_stock_news(tickers=None):
@@ -23,7 +24,6 @@ def fetch_stock_news(tickers=None):
         tickers = ["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"]
 
     formatted_news = []
-
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
@@ -74,12 +74,13 @@ def fetch_stock_news(tickers=None):
     return formatted_news
 
 
-class Home_ScreenApp(MDApp):
-    def build(self):
-        self.theme_cls.primary_palette = "Blue"
-        self.theme_cls.theme_style = "Dark"
-        self.layout = Builder.load_file("HomeScreen.kv")
+class HomeScreen(MDScreen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.row_data = []
+
+    def build(self):
+        self.layout = Builder.load_file("HomeScreen.kv")
         return self.layout
 
     def on_start(self):
@@ -186,15 +187,13 @@ class Home_ScreenApp(MDApp):
             size_hint=(1, None),
             height=dp(50) * (len(self.row_data) + 2),
             pos_hint={"center_x": 0.5},
-            column_data=[
-                ("Company Name", dp(50)),
-                ("High", dp(38)),
-                ("Low", dp(38)),
-                ("Prev Close", dp(43)),
-                ("Change", dp(43)),
-                ("Gain", dp(43)),
-                ("5 Day Avg", dp(48)),
-            ],
+            column_data=[("Company Name", dp(50)),
+                         ("High", dp(38)),
+                         ("Low", dp(38)),
+                         ("Prev Close", dp(43)),
+                         ("Change", dp(43)),
+                         ("Gain", dp(43)),
+                         ("5 Day Avg", dp(48))],
             row_data=self.row_data,
         )
 
@@ -317,6 +316,3 @@ class Home_ScreenApp(MDApp):
             lambda dt: self.load_latest_news(["AAPL", "MSFT", "TSLA", "AMZN", "NVDA"]),
             1,
         )
-
-
-Home_ScreenApp().run()
