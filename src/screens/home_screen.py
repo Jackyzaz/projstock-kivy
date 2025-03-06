@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from src.data.stock_data import get_multiple_data
+from src.Data.stock_data import get_multiple_data
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.app import MDApp
