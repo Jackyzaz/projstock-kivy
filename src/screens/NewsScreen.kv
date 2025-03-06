@@ -1,9 +1,15 @@
 #:import datetime datetime.datetime
-MDScreen:
+<NewsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
         spacing: dp(10)
         padding: dp(10)
+
+        MDTopAppBar:
+            title: "Home"
+            md_bg_color: 0.1, 0.1, 0.15, 1
+            left_action_items: [["menu", lambda x: app.root.ids.navigation_drawer.set_state("open")]]
+
         MDLabel:
             text: "News\n" + datetime.today().strftime('%d %B')
             font_style: "H5"
@@ -29,3 +35,11 @@ MDScreen:
         MDRaisedButton:
             text: "More about Dow Jones"
             pos_hint: {"center_x": 0.5}
+
+#test click
+        MDRaisedButton:
+            text: "Click Me"
+            pos_hint: {"center_x": 0.5}
+            size_hint_y: None
+            height: dp(50)
+            on_release: root.on_button_click()

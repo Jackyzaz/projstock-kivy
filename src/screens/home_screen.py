@@ -2,19 +2,21 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from src.data.stock_data import get_multiple_data
+from src.Data.stock_data import get_multiple_data
 from kivy.lang import Builder
 from kivy.metrics import dp
-from kivymd.app import MDApp
-from kivymd.uix.datatables import MDDataTable
-from kivy.clock import Clock
+from kivymd.uix.screen import MDScreen
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.card import MDCard
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.datatables import MDDataTable
+from kivy.clock import Clock
 import yfinance as yf
 from datetime import datetime
+import pandas as pd
 from kivy.uix.scrollview import ScrollView
+from kivymd.uix.card import MDCard
+from kivy.uix.screenmanager import Screen
 
 KV_PATH = os.path.join(os.path.dirname(__file__), "HomeScreen.kv")
 Builder.load_file(KV_PATH)
@@ -51,7 +53,6 @@ def fetch_stock_news(ticker="NVDA"):
 class HomeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.theme_cls = MDApp.get_running_app().theme_cls
         self.row_data = []
 
     def on_enter(self):
@@ -96,7 +97,7 @@ class HomeScreen(Screen):
             "FB",
             "BABA",
         ]
-        stock_data = get_multiple_data(stock_list, "5d", "1h")
+        stock_data = get_multiple_data(stock_list, "5d", "1d")
 
         self.row_data = []
         for stock, data in stock_data.items():
@@ -131,15 +132,13 @@ class HomeScreen(Screen):
             size_hint=(1, None),
             height=dp(50) * (len(self.row_data) + 2),
             pos_hint={"center_x": 0.5},
-            column_data=[
-                ("Company Name", dp(50)),
-                ("High", dp(38)),
-                ("Low", dp(38)),
-                ("Prev Close", dp(43)),
-                ("Change", dp(43)),
-                ("Gain", dp(43)),
-                ("5 Day Avg", dp(48)),
-            ],
+            column_data=[("Company Name", dp(50)),
+                         ("High", dp(38)),
+                         ("Low", dp(38)),
+                         ("Prev Close", dp(43)),
+                         ("Change", dp(43)),
+                         ("Gain", dp(43)),
+                         ("5 Day Avg", dp(48))],
             row_data=self.row_data,
         )
 
