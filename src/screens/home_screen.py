@@ -18,6 +18,7 @@ from kivy.uix.scrollview import ScrollView
 from kivymd.uix.card import MDCard
 
 
+
 def fetch_stock_news(tickers=None):
     """ดึงข่าวจาก yfinance ของหลายหุ้น"""
     if tickers is None:
@@ -78,10 +79,6 @@ class HomeScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.row_data = []
-
-    def build(self):
-        self.layout = Builder.load_file("HomeScreen.kv")
-        return self.layout
 
     def on_start(self):
         Clock.schedule_once(self.show_loading_label, 0)
