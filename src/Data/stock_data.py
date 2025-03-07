@@ -48,22 +48,29 @@ def get_multiple_data(tickers, period, interval):
             print(f"No data found for {ticker}. It may be delisted.")
     return all_data
 
-
 def plot_stock_data(ticker, period, interval):
     data = get_data(ticker, period, interval)
     if data.empty:
         print(f"⚠️ No data retrieved for {ticker}.")
         return
     
-    # ใช้ spline interpolation เพื่อทำให้กราฟเรียบขึ้น
-    spl_close = splrep(data['Datetime'].astype(int) / 10**9, data['Close'], s=0.9)  
+    # Calculate smoothed close prices
+    data['Close_smooth'] = data['Close'].rolling(window=7, min_periods=1).mean()
+    if data['Close_smooth'].iloc[-1] < data['Close_smooth'].iloc[0]:
+        overall_color = '#FF4C4C' 
+    else:
+        overall_color = '#4CFF4C' 
+    
+    # Spline interpolation for smoother line
+    spl_close = splrep(data['Datetime'].astype(int) / 10**9, data['Close_smooth'], s=0.9)
     
     plt.style.use('dark_background')
-    
     plt.figure(figsize=(10, 6))
-    plt.plot(data['Datetime'], splev(data['Datetime'].astype(int) / 10**9, spl_close), label=f'{ticker} Price', color='orange', linewidth=1.5)  # เส้นกราฟสีส้ม
+    
+    plt.plot(data['Datetime'], splev(data['Datetime'].astype(int) / 10**9, spl_close), 
+             label=f'{ticker} Price', linewidth=1.5, color=overall_color)
 
-    mplcyberpunk.add_glow_effects(gradient_fill=True)    
+    mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
     plt.xlabel('Date/Time')
     plt.ylabel('Close Price (THB)', fontsize=12, color='white')
     plt.box(False)
@@ -72,4 +79,4 @@ def plot_stock_data(ticker, period, interval):
     plt.yticks(color='white')
     plt.show()
 
-plot_stock_data("GOOGL", "1y", "1d")  
+plot_stock_data("GOOGL", "1y", "1d")
