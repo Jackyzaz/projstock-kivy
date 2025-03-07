@@ -11,7 +11,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.core.window import Window
 
-Builder.load_file("NewsScreen.kv")
+# Builder.load_file("NewsScreen.kv")
 # Builder.load_file("HomeScreen.kv")
 Window.size = (1280, 720)
 
