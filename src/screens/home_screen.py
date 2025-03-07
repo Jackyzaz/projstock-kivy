@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from src.Data.stock_data import get_multiple_data
+from src.data.stock_data import get_multiple_data
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.uix.screen import MDScreen
@@ -132,13 +132,15 @@ class HomeScreen(Screen):
             size_hint=(1, None),
             height=dp(50) * (len(self.row_data) + 2),
             pos_hint={"center_x": 0.5},
-            column_data=[("Company Name", dp(50)),
-                         ("High", dp(38)),
-                         ("Low", dp(38)),
-                         ("Prev Close", dp(43)),
-                         ("Change", dp(43)),
-                         ("Gain", dp(43)),
-                         ("5 Day Avg", dp(48))],
+            column_data=[
+                ("Company Name", dp(50)),
+                ("High", dp(38)),
+                ("Low", dp(38)),
+                ("Prev Close", dp(43)),
+                ("Change", dp(43)),
+                ("Gain", dp(43)),
+                ("5 Day Avg", dp(48)),
+            ],
             row_data=self.row_data,
         )
 
