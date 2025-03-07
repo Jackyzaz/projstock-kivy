@@ -1,6 +1,8 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
+from scipy.interpolate import splrep, splev
+import mplcyberpunk
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from yfinance.exceptions import YFPricesMissingError
@@ -48,30 +50,26 @@ def get_multiple_data(tickers, period, interval):
 
 
 def plot_stock_data(ticker, period, interval):
-    # ดึงข้อมูลหุ้น
     data = get_data(ticker, period, interval)
-    
-    # ตรวจสอบว่าได้ข้อมูลมาแล้วหรือยัง
     if data.empty:
         print(f"⚠️ No data retrieved for {ticker}.")
         return
     
-    # สร้างกราฟ
+    # ใช้ spline interpolation เพื่อทำให้กราฟเรียบขึ้น
+    spl_close = splrep(data['Datetime'].astype(int) / 10**9, data['Close'], s=0.9)  
+    
+    plt.style.use('dark_background')
+    
     plt.figure(figsize=(10, 6))
-    
-    # แสดงกราฟการเปลี่ยนแปลงของราคา close ตามเวลาที่มีให้
-    plt.plot(data['Datetime'], data['Close'], label=f'{ticker} Close Price', color='orange')
-    
-    # ตั้งชื่อแกน
+    plt.plot(data['Datetime'], splev(data['Datetime'].astype(int) / 10**9, spl_close), label=f'{ticker} Price', color='orange', linewidth=1.5)  # เส้นกราฟสีส้ม
+
+    mplcyberpunk.add_glow_effects(gradient_fill=True)    
     plt.xlabel('Date/Time')
-    plt.ylabel('Close Price (THB)')
-    plt.title(f'{ticker} Stock Price over Time')
-    
-    # แสดงกราฟ
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+    plt.ylabel('Close Price (THB)', fontsize=12, color='white')
+    plt.box(False)
+    plt.grid(True, which='both', axis='both', color='gray', linestyle='-', linewidth=0.5, alpha=0.2)
+    plt.xticks(rotation=45, color='white') 
+    plt.yticks(color='white')
     plt.show()
 
-# ตัวอย่างการใช้ฟังก์ชัน
-plot_stock_data("AAPL", "1mo", "1h")
+plot_stock_data("GOOGL", "1y", "1d")  
