@@ -1,14 +1,11 @@
 #:import datetime datetime.datetime
 <NewCard>:
-    id: stock_box
     orientation: "vertical"
     minimum_height: dp(100)
     md_bg_color: 0.1, 0.1, 0.1, 1
     size_hint: [1, None]
     height: dp(120)
-    elevation: 5
-    spacing: dp(20)
-
+    spacing: dp(10)
     MDLabel:
         text: root.source
         font_style: "Caption"
@@ -94,6 +91,9 @@
                 orientation: "vertical"
                 padding_vertical: dp(20)
                 spacing: dp(5)
+                size_hint_y: 0.3
+                MDLabel:
+
                 MDBoxLayout:
                     spacing: dp(10)
                     MDLabel:
@@ -130,22 +130,19 @@
                     adaptive_size: True
                 MDLabel:
             #/SECTION: Stock Infomation
-
+           
             #SECTION: News
-            MDGridLayout:
-                id: news_grid
-                cols: 2
-                spacing: [10,70]
-                #SECTION: News Cards
-                # NewCard:
-                # NewCard:
-                # NewCard:
-                # NewCard:
-                #/SECTION: News Cards
-                
-               
-                
-            MDLabel:
-                adaptive_size:True
+            MDBoxLayout:
+                # orientation: "vertical"
+                MDScrollView:
+                    do_scroll_x: False  # Disable horizontal scrolling
+                    do_scroll_y: True   # Enable vertical scrolling
+                    bar_width: dp(10)    # Optional: Adjust scrollbar width
 
-# NewsScreen:
+                    MDGridLayout:
+                        id: news_grid
+                        cols: 2  # Ensure single-column layout for better scrolling
+                        spacing: dp(40)
+                        adaptive_height: True  # This makes it expand dynamically
+                        size_hint_y: None  # Required for adaptive_height to work 
+            #/SECTION: News

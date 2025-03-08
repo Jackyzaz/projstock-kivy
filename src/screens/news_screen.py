@@ -1,45 +1,67 @@
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivy.metrics import dp
 from kivy.properties import StringProperty
 
 MOCK_NEWS_DATA = [
     {
-        "title": "Stock Market Hits New High",
-        "description": "Description on the description with description after description before description",
         "source": "finance.com",
+        "title": "Stock Market Hits New High",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "2 hours ago",
     },
     {
-        "title": "Tech Giants Report Record Profits",
-        "description": "Description on the description with description after description before description",
         "source": "businessnews.com",
+        "title": "Tech Giants Report Record Profits",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "5 hours ago",
     },
     {
-        "title": "Oil Prices Surge Amid Global Tensions",
-        "description": "Description on the description with description after description before description",
         "source": "energywatch.com",
+        "title": "Oil Prices Surge Amid Global Tensions",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "8 hours ago",
     },
     {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
         "source": "cryptoalert.com",
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "1 day ago",
     },
     {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
         "source": "cryptoalert.com",
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "1 day ago",
     },
     {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
         "source": "cryptoalert.com",
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
+        "time": "1 day ago",
+    },
+    {
+        "source": "finance.com",
+        "title": "Stock Market Hits New High",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
+        "time": "2 hours ago",
+    },
+    {
+        "source": "businessnews.com",
+        "title": "Tech Giants Report Record Profits",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
+        "time": "5 hours ago",
+    },
+    {
+        "source": "energywatch.com",
+        "title": "Oil Prices Surge Amid Global Tensions",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
+        "time": "8 hours ago",
+    },
+    {
+        "source": "cryptoalert.com",
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description. Description on the description with description after description before description",
         "time": "1 day ago",
     },
 ]
@@ -73,9 +95,9 @@ class NewsScreen(MDScreen):
 
         for news in MOCK_NEWS_DATA:
             news_card = NewCard(
+                source=news["source"],
                 title=news["title"],
                 description=news["description"],
-                source=news["source"],
                 time=news["time"],
             )
             news_grid.add_widget(news_card)
