@@ -6,6 +6,9 @@ import mplcyberpunk
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from yfinance.exceptions import YFPricesMissingError
+import concurrent.futures
+import requests
+import asyncio
 
 
 def fetch_stock_data(ticker, period, interval):
@@ -37,16 +40,42 @@ def get_data(name, period, interval):
     return data
 
 
-def get_multiple_data(tickers, period, interval):
+def fetch_single_stock(ticker, session, period, interval):
+    try:
+        stock = yf.Ticker(ticker, session=session)
+        data = stock.history(period=period, interval=interval)
+        if not data.empty:
+            return ticker, process_timezone(data)
+    except Exception as e:
+        print(f"❌ Error fetching {ticker}: {e}")
+    return ticker, None
+
+
+async def get_multiple_data_async(tickers, period, interval):
     all_data = {}
-    for ticker in tickers:
-        try:
-            data = get_data(ticker, period, interval)
-            if not data.empty:
+    session = requests.Session()  # ใช้ session เดียว ลดการสร้าง connection ใหม่
+
+    loop = asyncio.get_event_loop()
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=6
+    ) as executor:  # ลด Worker เพื่อไม่ให้ CPU ใช้หนักเกิน
+        futures = [
+            loop.run_in_executor(
+                executor, fetch_single_stock, ticker, session, period, interval
+            )
+            for ticker in tickers
+        ]
+
+        results = await asyncio.gather(*futures)
+        for ticker, data in results:
+            if data is not None:
                 all_data[ticker] = data
-        except YFPricesMissingError:
-            print(f"No data found for {ticker}. It may be delisted.")
+
     return all_data
+
+
+def get_multiple_data(tickers, period, interval):
+    return asyncio.run(get_multiple_data_async(tickers, period, interval))
 
 
 def plot_stock_data(ticker, period, interval):

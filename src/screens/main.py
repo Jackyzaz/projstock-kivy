@@ -10,6 +10,7 @@ from kivymd.uix.relativelayout import MDRelativeLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivymd.tools.hotreload.app import MDApp
+from kivy.core.window import Window
 
 
 Builder.load_file("HomeScreen.kv")
@@ -22,6 +23,7 @@ class MainApp(MDApp):
 
     # Just build_app and delete first=False
     def build(self):
+        Window.size = (1280, 720)
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
 

@@ -3,7 +3,7 @@
         orientation: "vertical"
         padding: dp(15)
         spacing: dp(15)
-        md_bg_color: 0.2, 0.2, 0.2, 1  
+        md_bg_color: 0.1, 0.1, 0.1, 1  
 
         MDTopAppBar:
             title: "Home"
@@ -14,6 +14,7 @@
         MDBoxLayout:
             size_hint_y: 0.4
             spacing: dp(15)
+            md_bg_color: 0.1, 0.1, 0.1, 1
 
             # Header Box (ด้านซ้าย)
             MDBoxLayout:
@@ -67,23 +68,16 @@
                 size_hint_x: 0.7
                 size_hint_y: 1  
                 md_bg_color: 0.1, 0.1, 0.1, 1 
-                radius: [10, 10, 10, 10]
                 elevation: 10
-                padding: dp(10)
 
         # ตารางข้อมูลหุ้น
         ScrollView:
             size_hint_y: 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             radius: [10, 10, 10, 10]
-            do_scroll_x: False
+            do_scroll_x: True
             do_scroll_y: True
             id: stock_table_box
             adaptive_height: True
             md_bg_color: 0.1, 0.1, 0.1, 1 
-            canvas.before:
-                Color:
-                    rgba: 0.1, 0.1, 0.1, 1 
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            
