@@ -1,6 +1,7 @@
 import yfinance as yf
 from datetime import datetime
-import json
+import concurrent.futures
+import asyncio
 
 
 def fetch_stock_info(ticker):
@@ -38,30 +39,51 @@ def fetch_stock_info(ticker):
         }
 
 
-def fetch_stock_news(ticker):
-    stock = yf.Ticker(ticker)
-    news_list = stock.get_news()
+async def fetch_stock_news_async(ticker):
+    loop = asyncio.get_event_loop()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+        news = await loop.run_in_executor(executor, fetch_stock_news_worker, ticker)
+    return news
 
-    if not news_list:
+
+def fetch_stock_news_worker(ticker):
+    try:
+        stock = yf.Ticker(ticker)
+        news_list = stock.get_news()
+
+        if not news_list:
+            return []
+
+        formatted_news = []
+        for news in news_list:
+            content = news.get("content", {})
+            thumbnail = content.get("thumbnail", {})
+            provider = content.get("provider", {}).get("url", "Unknown Source")
+            title = content.get("title", "No Title")
+            summary = content.get("summary", "No Summary")
+            pubDate = content.get("pubDate", "1970-01-01T00:00:00Z")
+
+            try:
+                dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
+                pubDate_formatted = dt_obj.strftime("%d/%m/%Y %H:%M:%S")
+            except:
+                pubDate_formatted = "Unknown Date"
+
+            formatted_news.append(
+                {
+                    "thumbnail": thumbnail,
+                    "provider": provider,
+                    "title": title,
+                    "summary": summary,
+                    "pubDate": pubDate_formatted,
+                }
+            )
+        return formatted_news
+
+    except Exception as e:
+        print(f"Error fetching news for {ticker}: {e}")
         return []
 
-    formatted_news = []
 
-    for news in news_list:
-        content = news.get("content", {})
-        thumbnail = content.get("thumbnail", {})
-        provider = content.get("provider", {}).get("url", "Unknow Source")
-        title = content.get("title", {})
-        summary = content.get("summary", {})
-        pubDate = content.get("pubDate", {})
-        dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
-        formatted_news.append(
-            {
-                "thumbnail": thumbnail,
-                "provider": provider,
-                "title": title,
-                "summary": summary,
-                "pubDate": dt_obj.strftime("%d/%m/%Y %H:%M:%S"),
-            }
-        )
-    return formatted_news
+def fetch_stock_news(ticker):
+    return asyncio.run(fetch_stock_news_async(ticker))
