@@ -9,6 +9,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from src.data.news_data import fetch_stock_news, fetch_stock_info
+import webbrowser
 
 Builder.load_file("NewsScreen.kv")
 
@@ -30,6 +31,11 @@ class NewCard(MDCard):
     description = StringProperty()
     source = StringProperty()
     time = StringProperty()
+    click_through_url = StringProperty()
+
+    def Push(self):
+        """Open news link in a WebView window"""
+        webbrowser.open(self.click_through_url)
 
 
 class NewsScreen(MDScreen):
@@ -37,8 +43,7 @@ class NewsScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.populate_news, 0.1)
-        Clock.schedule_once(self.get_stock_info, 0.1)  # Load initial stock data
+        Clock.schedule_once(self.get_stock_info, 1)  # Load initial stock data
 
     def get_stock_data(self, stock_id):
         """Fetch stock data and news separately and update UI"""
@@ -50,6 +55,9 @@ class NewsScreen(MDScreen):
         if not stock_info or not news_grid:
             print("Error: stock_info or news_grid not found in KV file.")
             return
+
+        # Clear old news before adding new ones
+        news_grid.clear_widgets()
 
         # Fetch stock details
         stock_data = fetch_stock_info(stock_id.upper())
@@ -69,14 +77,14 @@ class NewsScreen(MDScreen):
             )
         )
 
-        # Update news UI
-        news_grid.clear_widgets()
+        # Populate news UI
         for news in news_data:
             news_card = NewCard(
                 source=news.get("provider", ""),
                 title=news.get("title", "No title available"),
                 description=news.get("summary", "No summary available"),
                 time=news.get("pubDate", "Unknown date"),
+                click_through_url=news.get("click_through_url", "Invalid Link"),
             )
             news_grid.add_widget(news_card)
 
@@ -118,26 +126,28 @@ class NewsScreen(MDScreen):
                 title=news.get("title", "No title available"),
                 description=news.get("summary", "No summary available"),
                 time=news.get("pubDate", "Unknown date"),
+                click_through_url=news.get("click_through_url", "Unknown date"),
             )
             news_grid.add_widget(news_card)
 
     def populate_news(self, dt):
-        """Populate the grid with mock news data"""
+        """Populate the grid with news data"""
         news_grid = self.ids.get("news_grid", None)
 
         if not news_grid:
             print("Error: news_grid not found in KV file.")
             return
 
-        # Clear previous news
+        # Clear previous news to avoid duplicates
         news_grid.clear_widgets()
 
-        # Populate with news
-        for news in fetch_stock_news("default"):  # Fetch default news initially
+        # Fetch default news initially
+        for news in fetch_stock_news("default"):
             news_card = NewCard(
                 source=news["source"],
                 title=news["title"],
                 description=news["description"],
                 time=news["time"],
+                click_through_url=news.get("click_through_url", "Unknown date"),
             )
             news_grid.add_widget(news_card)

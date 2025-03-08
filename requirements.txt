@@ -44,3 +44,4 @@ urllib3==2.3.0
 watchdog==6.0.0
 yfinance==0.2.54
 zope.interface==7.2
+pywebview==5.4
