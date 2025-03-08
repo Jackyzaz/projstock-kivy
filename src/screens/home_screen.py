@@ -51,7 +51,6 @@ class HomeScreen(MDScreen):
             "NFLX",
             "NVDA",
             "META",
-            "BABA",
         ]
         self.stock_data = get_multiple_data(stock_list, "5d", "1d")
         self.update_stock_table()
@@ -73,12 +72,16 @@ class HomeScreen(MDScreen):
 
         latest_news_box.clear_widgets()
 
-        scroll_view = ScrollView(size_hint=(1, 1), do_scroll_x=False, do_scroll_y=True)
+        scroll_view = ScrollView(
+            size_hint=(1, 1),
+            do_scroll_x=False,
+            do_scroll_y=True,
+        )
         news_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(10),
             size_hint_y=None,
             adaptive_height=True,
+            md_bg_color=(0.1, 0.1, 0.1, 1),
         )
 
         for news in self.news_data:
@@ -86,12 +89,13 @@ class HomeScreen(MDScreen):
                 size_hint_x=1,
                 size_hint_y=None,
                 height=dp(120),
-                padding=dp(10),
-                radius=[10],
-                elevation=5,
+                md_bg_color=(0.1, 0.1, 0.1, 1),
             )
             news_box = MDBoxLayout(
-                orientation="vertical", size_hint_y=None, adaptive_height=True
+                orientation="vertical",
+                size_hint_y=None,
+                adaptive_height=True,
+                md_bg_color=(0.1, 0.1, 0.1, 1),
             )
 
             title_label = MDLabel(
@@ -161,6 +165,8 @@ class HomeScreen(MDScreen):
             )
 
         self.stock_table = MDDataTable(
+            background_color_header=(0.1, 0.1, 0.1, 1),
+            background_color_cell=(0.1, 0.1, 0.1, 1),
             rows_num=len(self.row_data),
             size_hint=(1, None),
             height=dp(50) * (len(self.row_data) + 2),
