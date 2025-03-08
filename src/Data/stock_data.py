@@ -73,7 +73,7 @@ def plot_stock_data(ticker, period, interval):
     mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
     plt.box(False)
     plt.grid(True, which='both', axis='both', color='gray', linestyle='-', linewidth=0.5, alpha=0.2)
-    plt.xticks(rotation=45, color='white') 
+    plt.xticks(color='white') 
     plt.yticks(color='white')
 
     return plt
