@@ -4,6 +4,9 @@ MDNavigationLayout:
 
         HomeScreen:
             name: "home"
+        
+        SearchScreen:
+            name: "search"
 
         NewsScreen:
             name: "news"
@@ -61,3 +64,12 @@ MDNavigationLayout:
 
                     IconLeftWidget:
                         icon: "newspaper"
+
+                OneLineIconListItem:
+                    text: "Search"
+                    on_release:
+                        app.switch_screen("search")
+                        navigation_drawer.set_state("close")
+
+                    IconLeftWidget:
+                        icon: "magnify" 
