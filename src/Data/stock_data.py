@@ -64,7 +64,7 @@ def plot_stock_data(ticker, period, interval):
 
     # Spline interpolation for smoother line
     spl_close = splrep(
-        data["Datetime"].astype(int) / 10**9, data["Close_smooth"], s=0.9
+        data["Datetime"].astype(int) / 10**9, data["Close_smooth"], s=len(data) * 0.01
     )
 
     plt.style.use("dark_background")
@@ -79,8 +79,6 @@ def plot_stock_data(ticker, period, interval):
     )
 
     mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
-    plt.xlabel("Date/Time")
-    plt.ylabel("Close Price (THB)", fontsize=12, color="white")
     plt.box(False)
     plt.grid(
         True,
@@ -91,6 +89,7 @@ def plot_stock_data(ticker, period, interval):
         linewidth=0.5,
         alpha=0.2,
     )
-    plt.xticks(rotation=45, color="white")
+    plt.xticks(color="white")
     plt.yticks(color="white")
-    plt.show()
+
+    return plt
