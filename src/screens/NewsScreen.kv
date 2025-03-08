@@ -3,6 +3,7 @@
     orientation: "vertical"
     padding_vertical: dp(20)
     spacing: dp(5)
+    
     MDLabel:
 
     MDBoxLayout:
@@ -10,12 +11,12 @@
         MDLabel:
             text: root.stock_name
             font_style: "H6"
-            font_size: "30sp"
+            font_size: "40sp"
             adaptive_size: True
         MDLabel:
             text: root.stock_fullname
             font_style: "H3"
-            font_size: "25sp"
+            font_size: "34sp"
             adaptive_size: True
 
     MDBoxLayout:
@@ -24,20 +25,20 @@
         MDLabel:
             text: root.stock_value
             font_style: "H6"
-            font_size: "25sp"
+            font_size: "30sp"
             size_hint_x: None
             adaptive_size: True
         MDLabel:
             text: root.stock_change
             font_style: "H6"
-            font_size: "23sp"
+            font_size: "25sp"
             theme_text_color: "Custom"
             text_color: 1, 0.2, 0.3, 1
             adaptive_size: True
     MDLabel:
         text: root.stock_status
         font_style: "H6"
-        font_size: "15sp"
+        font_size: "20sp"
         adaptive_size: True
     MDLabel:
 
@@ -85,7 +86,7 @@
         orientation: "vertical"
         padding: dp(20)
         spacing: dp(15)
-        md_bg_color: 0.2, 0.2, 0.2, 1
+        md_bg_color: 0.1, 0.1, 0.1, 1
 
         MDBoxLayout:
             id: stock_box
@@ -99,40 +100,58 @@
             padding: dp(15)
             minimum_height: dp(100)
 
-            MDLabel:
-                text: "News"
-                font_style: "H1"
-                halign: "left"
-                valign: "top"
-                font_size: "30sp"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                size_hint_y: 1
-                adaptive_height: True
-                
-            
-            MDLabel:
-                text: datetime.today().strftime('%d %B') 
-                font_style: "H6"
-                halign: "left"
-                valign: "top"
-                font_size: "35sp"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                size_hint_y: 1
-                adaptive_height: True
+            MDBoxLayout:
+                size_hint_y: 0.15
 
+                MDBoxLayout:
+                    orientation: "vertical"
+                    MDLabel:
+                        text: "News"
+                        font_style: "H1"
+                        halign: "left"
+                        valign: "top"
+                        font_size: "30sp"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: 1
+                        adaptive_height: True
+                        
+                    
+                    MDLabel:
+                        text: datetime.today().strftime('%d %B') 
+                        font_style: "H6"
+                        halign: "left"
+                        valign: "top"
+                        font_size: "35sp"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: 1
+                        adaptive_height: True
+                
+                MDBoxLayout:
+                    orientation: "vertical"
+                    MDTextField:
+                        id: stock_search
+                        mode: "rectangle"
+                        hint_text: "Search Stock Name"
+                        helper_text: "Search Stock Name"
+                        background_color: 1, 1, 1, 1
+                        size_hint: 1, 2
+                        font_size: "20sp"
+                        on_text_validate: root.get_stock_data(self.text.upper())
+
+            
+            # HR-LINE
             MDBoxLayout:
                 md_bg_color: 1, 1, 1, 1
                 size_hint_y: None
                 height: self.minimum_height + 1
-                
 
             #SECTION: Stock Infomation
             MDBoxLayout:
                 orientation: "vertical"
                 id: stock_info
-                size_hint_y: 0.3
+                size_hint_y: 0.4
             #/SECTION: Stock Infomation
            
             #SECTION: News
@@ -145,8 +164,10 @@
 
                     MDGridLayout:
                         id: news_grid
-                        cols: 2  # Ensure single-column layout for better scrolling
+                        cols: 2
                         spacing: dp(40)
                         adaptive_height: True  # This makes it expand dynamically
-                        size_hint_y: None  # Required for adaptive_height to work 
             #/SECTION: News
+
+NewsScreen:
+    id: news_screen
