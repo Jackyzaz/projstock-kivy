@@ -48,20 +48,30 @@ def fetch_stock_news(ticker):
     formatted_news = []
 
     for news in news_list:
+        # print(json.dumps(news, indent=2)) # Use this line to logs
         content = news.get("content", {})
-        thumbnail = content.get("thumbnail", {})
         provider = content.get("provider", {}).get("url", "Unknow Source")
+
+        # Ensure 'clickThroughUrl' is an object (dict) before accessing 'url'
+        click_through_obj = content.get("clickThroughUrl", {})
+        click_through_url = (
+            click_through_obj.get("url", "Unknown Source")
+            if isinstance(click_through_obj, dict)
+            else "Unknown Source"
+        )
+
         title = content.get("title", {})
         summary = content.get("summary", {})
         pubDate = content.get("pubDate", {})
         dt_obj = datetime.strptime(pubDate, "%Y-%m-%dT%H:%M:%SZ")
         formatted_news.append(
             {
-                "thumbnail": thumbnail,
                 "provider": provider,
+                "click_through_url": click_through_url,
                 "title": title,
                 "summary": summary,
                 "pubDate": dt_obj.strftime("%d/%m/%Y %H:%M:%S"),
             }
         )
+        print(json.dumps(formatted_news, indent=2))
     return formatted_news
