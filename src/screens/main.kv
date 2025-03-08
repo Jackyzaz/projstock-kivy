@@ -1,4 +1,30 @@
-MDNavigationLayout:
+MDBoxLayout:
+
+    MDNavigationRail:
+        MDNavigationRailFabButton:
+            # text: "STOCK APP"
+            icon: "finance"
+            on_release: app.switch_screen("home")
+
+
+        MDNavigationRailItem:
+            text: "Home"
+            icon: "home"
+            on_release: app.switch_screen("home")
+
+        MDNavigationRailItem:
+            text: "News"
+            icon: "newspaper"
+            on_release: app.switch_screen("news")
+
+
+        MDNavigationRailItem:
+            text: "Search"
+            icon: "magnify"
+            on_release: app.switch_screen("search")
+
+
+
     MDScreenManager:
         id: screen_manager
 
@@ -11,65 +37,78 @@ MDNavigationLayout:
         NewsScreen:
             name: "news"
 
-    MDNavigationDrawer:
-        id: navigation_drawer
-        radius: (0, 16, 16, 0)
-        md_bg_color: 0.1, 0.1, 0.15, 1
+    # MDNavigationLayout:
+    #     MDScreenManager:
+    #         id: screen_manager
 
-        BoxLayout:
-            orientation: "vertical"
-            spacing: "12dp"
-            padding: "16dp"
-            size_hint_y: None
-            height: self.minimum_height
-            pos_hint: {"top": 1}
+    #         HomeScreen:
+    #             name: "home"
+            
+    #         SearchScreen:
+    #             name: "search"
 
-            BoxLayout:
-                orientation: "horizontal"
-                size_hint_y: None
-                height: "64dp"
-                spacing: "12dp"
-                padding: "8dp"
-                pos_hint: {"top": 1}
+    #         NewsScreen:
+    #             name: "news"
 
-                Image:
-                    source: "../assets/logo.png"
-                    size_hint: None, None
-                    size: "48dp", "48dp"
+    # MDNavigationDrawer:
+    #     id: navigation_drawer
+    #     radius: (0, 16, 16, 0)
+    #     md_bg_color: 0.1, 0.1, 0.15, 1
 
-                MDLabel:
-                    text: "Kivy Stock"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_style: "H5"
-                    bold: True
-                    halign: "left"
-                    valign: "center"
+    #     BoxLayout:
+    #         orientation: "vertical"
+    #         spacing: "12dp"
+    #         padding: "16dp"
+    #         size_hint_y: None
+    #         height: self.minimum_height
+    #         pos_hint: {"top": 1}
 
-            MDList:
-                OneLineIconListItem:
-                    text: "Home"
-                    on_release:
-                        app.switch_screen("home")
-                        navigation_drawer.set_state("close")
+    #         BoxLayout:
+    #             orientation: "horizontal"
+    #             size_hint_y: None
+    #             height: "64dp"
+    #             spacing: "12dp"
+    #             padding: "8dp"
+    #             pos_hint: {"top": 1}
 
-                    IconLeftWidget:
-                        icon: "home"
+    #             Image:
+    #                 source: "../assets/logo.png"
+    #                 size_hint: None, None
+    #                 size: "48dp", "48dp"
 
-                OneLineIconListItem:
-                    text: "News"
-                    on_release:
-                        app.switch_screen("news")
-                        navigation_drawer.set_state("close")
+    #             MDLabel:
+    #                 text: "Kivy Stock"
+    #                 theme_text_color: "Custom"
+    #                 text_color: 1, 1, 1, 1
+    #                 font_style: "H5"
+    #                 bold: True
+    #                 halign: "left"
+    #                 valign: "center"
 
-                    IconLeftWidget:
-                        icon: "newspaper"
+    #         MDList:
+    #             OneLineIconListItem:
+    #                 text: "Home"
+    #                 on_release:
+    #                     app.switch_screen("home")
+    #                     navigation_drawer.set_state("close")
 
-                OneLineIconListItem:
-                    text: "Search"
-                    on_release:
-                        app.switch_screen("search")
-                        navigation_drawer.set_state("close")
+    #                 IconLeftWidget:
+    #                     icon: "home"
 
-                    IconLeftWidget:
-                        icon: "magnify" 
+    #             OneLineIconListItem:
+    #                 text: "News"
+    #                 on_release:
+    #                     app.switch_screen("news")
+    #                     navigation_drawer.set_state("close")
+
+    #                 IconLeftWidget:
+    #                     icon: "newspaper"
+
+    #             OneLineIconListItem:
+    #                 text: "Search"
+    #                 on_release:
+    #                     app.switch_screen("search")
+    #                     navigation_drawer.set_state("close")
+
+    #                 IconLeftWidget:
+    #                     icon: "magnify" 
