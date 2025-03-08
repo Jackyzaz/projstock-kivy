@@ -71,7 +71,7 @@ class HomeScreen(Screen):
     def fetch_stock_data(self, *args):
         """โหลดข้อมูลหุ้นแค่ครั้งเดียว แล้วเก็บไว้"""
         self.show_loading_label()
-        self.stock_data = self.load_stock_data()
+        self.stock_table = self.load_stock_data()
         Clock.schedule_once(self.update_stock_table, 0.2)
 
     def fetch_news_data(self, *args):
@@ -123,8 +123,14 @@ class HomeScreen(Screen):
         ]
         stock_data = get_multiple_data(stock_list, "5d", "1d")
 
+        if not stock_data:
+            return None
+
         self.row_data = []
         for stock, data in stock_data.items():
+            if data is None or data.empty:
+                continue
+
             latest_data = data.iloc[-1]
             close_prices = data["Close"].dropna()
 
@@ -150,6 +156,9 @@ class HomeScreen(Screen):
                 )
             )
 
+        if not self.row_data:
+            return None
+
         self.stock_table = MDDataTable(
             rows_num=len(self.row_data),
             size_hint=(1, None),
@@ -170,7 +179,7 @@ class HomeScreen(Screen):
 
     def update_stock_table(self, *args):
         """อัปเดตตารางหุ้นโดยใช้ข้อมูลที่โหลดแล้ว"""
-        if self.stock_data is None:
+        if self.stock_table is None:
             return
         self.replace_table()
 
