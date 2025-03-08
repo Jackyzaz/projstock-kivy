@@ -1,17 +1,21 @@
+import sys
+import os
 from kivy.lang import Builder
 from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.scrollview import ScrollView
-from kivymd.uix.list import MDList, OneLineIconListItem
-from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.textfield import MDTextField
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.button import MDRaisedButton
+from kivy_garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
+from kivy.uix.boxlayout import BoxLayout
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from src.data.stock_data import plot_stock_data
 
 class SearchScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-
         
+        plt = plot_stock_data("GOOGL", "1y", "1d")
+
+        self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+
+    
