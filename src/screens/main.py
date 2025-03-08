@@ -12,15 +12,15 @@ from kivy.uix.image import Image
 from kivymd.tools.hotreload.app import MDApp
 
 Builder.load_file('NewsScreen.kv')
-# Builder.load_file('HomeScreen.kv')
+Builder.load_file('HomeScreen.kv')
 Builder.load_file('SearchScreen.kv')
 
 class MainApp(MDApp):
-    KV_FILES = ["./src/screens/SearchScreen.kv"]
-    DEBUG=True
+    # KV_FILES = ["./src/screens/SearchScreen.kv"]
+    # DEBUG=True
 
-#Just build and delete first
-    def build_app(self,first=False):
+#Just build_app and delete first=False
+    def build(self):
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
 
@@ -28,7 +28,7 @@ class MainApp(MDApp):
 
         screen_manager.add_widget(SearchScreen(name="search"))
         screen_manager.add_widget(NewsScreen(name="news"))
-        # screen_manager.add_widget(HomeScreen(name="home"))
+        screen_manager.add_widget(HomeScreen(name="home"))
 
 
         root = Builder.load_file("main.kv")
