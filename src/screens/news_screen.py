@@ -1,7 +1,16 @@
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
+
+MOCK_STOCK_INFO = {
+    "stock_name": "Dow Jones",
+    "stock_fullname": "Dow Jones Industrial Average",
+    "stock_value": "43,428.02",
+    "stock_change": "-748.63",
+    "stock_status": "Market Closed",
+}
 
 MOCK_NEWS_DATA = [
     {
@@ -67,6 +76,16 @@ MOCK_NEWS_DATA = [
 ]
 
 
+class StockInfo(MDBoxLayout):
+    """Stock Infomation Overview"""
+
+    stock_name = StringProperty()
+    stock_fullname = StringProperty()
+    stock_value = StringProperty()
+    stock_change = StringProperty()
+    stock_status = StringProperty()
+
+
 class NewCard(MDCard):
     """Dynamically generated News Card"""
 
@@ -81,7 +100,24 @@ class NewsScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.populate_news, 0.1)  # Ensure ids are loaded
+        Clock.schedule_once(self.populate_news, 0.1)
+        Clock.schedule_once(self.get_stock_info, 0.1)  # Ensure ids are loaded
+
+    def get_stock_info(self, dt):
+        stock_info = self.ids.get("stock_info", None)  # Use correct ID
+        if not stock_info:
+            print("Error: stock_info not found in KV file.")
+            return
+        stock_info.clear_widgets()
+        stock_info.add_widget(
+            StockInfo(
+                stock_name=MOCK_STOCK_INFO["stock_name"],
+                stock_fullname=MOCK_STOCK_INFO["stock_fullname"],
+                stock_value=MOCK_STOCK_INFO["stock_value"],
+                stock_change=MOCK_STOCK_INFO["stock_change"],
+                stock_status=MOCK_STOCK_INFO["stock_status"],
+            )
+        )
 
     def populate_news(self, dt):
         """Populate the grid with mock data"""
