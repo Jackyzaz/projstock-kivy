@@ -71,12 +71,10 @@ def plot_stock_data(ticker, period, interval):
              label=f'{ticker} Price', linewidth=1.5, color=overall_color)
 
     mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
-    plt.xlabel('Date/Time')
-    plt.ylabel('Close Price (THB)', fontsize=12, color='white')
     plt.box(False)
     plt.grid(True, which='both', axis='both', color='gray', linestyle='-', linewidth=0.5, alpha=0.2)
     plt.xticks(rotation=45, color='white') 
     plt.yticks(color='white')
-    plt.show()
 
-plot_stock_data("GOOGL", "1y", "1d")
+    return plt
+
