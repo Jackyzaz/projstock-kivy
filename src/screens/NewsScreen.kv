@@ -1,14 +1,54 @@
 #:import datetime datetime.datetime
+<StockInfo>:
+    orientation: "vertical"
+    padding_vertical: dp(20)
+    spacing: dp(5)
+    
+    MDLabel:
+
+    MDBoxLayout:
+        spacing: dp(10)
+        MDLabel:
+            text: root.stock_name
+            font_style: "H6"
+            font_size: "40sp"
+            adaptive_size: True
+        MDLabel:
+            text: root.stock_fullname
+            font_style: "H3"
+            font_size: "34sp"
+            adaptive_size: True
+
+    MDBoxLayout:
+        adaptive_height: True
+        spacing: dp(15)
+        MDLabel:
+            text: root.stock_value
+            font_style: "H6"
+            font_size: "30sp"
+            size_hint_x: None
+            adaptive_size: True
+        MDLabel:
+            text: root.stock_change
+            font_style: "H6"
+            font_size: "25sp"
+            theme_text_color: "Custom"
+            text_color: 1, 0.2, 0.3, 1
+            adaptive_size: True
+    MDLabel:
+        text: root.stock_status
+        font_style: "H6"
+        font_size: "20sp"
+        adaptive_size: True
+    MDLabel:
+
 <NewCard>:
-    id: stock_box
     orientation: "vertical"
     minimum_height: dp(100)
     md_bg_color: 0.1, 0.1, 0.1, 1
     size_hint: [1, None]
     height: dp(120)
-    elevation: 5
-    spacing: dp(20)
-
+    spacing: dp(10)
     MDLabel:
         text: root.source
         font_style: "Caption"
@@ -40,14 +80,13 @@
         halign: "left"
         valign: "top"
         adaptive_size: True
-    
 
 <NewsScreen>:
     MDBoxLayout:
         orientation: "vertical"
         padding: dp(20)
         spacing: dp(15)
-        md_bg_color: 0.2, 0.2, 0.2, 1
+        md_bg_color: 0.1, 0.1, 0.1, 1
 
         MDBoxLayout:
             id: stock_box
@@ -61,29 +100,48 @@
             padding: dp(15)
             minimum_height: dp(100)
 
-            MDLabel:
-                text: "News"
-                font_style: "H1"
-                halign: "left"
-                valign: "top"
-                font_size: "30sp"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                size_hint_y: 1
-                adaptive_height: True
-                
-            
-            MDLabel:
-                text: datetime.today().strftime('%d %B') 
-                font_style: "H6"
-                halign: "left"
-                valign: "top"
-                font_size: "35sp"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                size_hint_y: 1
-                adaptive_height: True
+            MDBoxLayout:
+                size_hint_y: 0.15
 
+                MDBoxLayout:
+                    orientation: "vertical"
+                    MDLabel:
+                        text: "News"
+                        font_style: "H1"
+                        halign: "left"
+                        valign: "top"
+                        font_size: "30sp"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: 1
+                        adaptive_height: True
+                        
+                    
+                    MDLabel:
+                        text: datetime.today().strftime('%d %B') 
+                        font_style: "H6"
+                        halign: "left"
+                        valign: "top"
+                        font_size: "35sp"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: 1
+                        adaptive_height: True
+                
+                MDBoxLayout:
+                    orientation: "vertical"
+                    MDTextField:
+                        id: stock_search
+                        mode: "rectangle"
+                        hint_text: "Search Stock Name"
+                        helper_text: "Search Stock Name"
+                        background_color: 1, 1, 1, 1
+                        size_hint: 1, 2
+                        font_size: "20sp"
+                        on_text_validate: root.get_stock_data(self.text.upper())
+
+            
+            # HR-LINE
             MDBoxLayout:
                 md_bg_color: 1, 1, 1, 1
                 size_hint_y: None
@@ -92,60 +150,22 @@
             #SECTION: Stock Infomation
             MDBoxLayout:
                 orientation: "vertical"
-                padding_vertical: dp(20)
-                spacing: dp(5)
-                MDBoxLayout:
-                    spacing: dp(10)
-                    MDLabel:
-                        text: "STOCK NAME"
-                        font_style: "H6"
-                        font_size: "30sp"
-                        adaptive_size: True
-                    MDLabel:
-                        text: "STOCK FULL NAME LOREM IPSUM"
-                        font_style: "H3"
-                        font_size: "25sp"
-                        adaptive_size: True
-                
-                MDBoxLayout:
-                    adaptive_height: True
-                    spacing: dp(15)
-                    MDLabel:
-                        text: "10,021.42"
-                        font_style: "H6"
-                        font_size: "25sp"
-                        size_hint_x: None
-                        adaptive_size: True
-                    MDLabel:
-                        text: "-123.10"
-                        font_style: "H6"
-                        font_size: "23sp"
-                        theme_text_color: "Custom"
-                        text_color: 1, 0.2, 0.3, 1
-                        adaptive_size: True
-                MDLabel:
-                    text: "Market Closing"
-                    font_style: "H6"
-                    font_size: "15sp"
-                    adaptive_size: True
-                MDLabel:
+                id: stock_info
+                size_hint_y: 0.4
             #/SECTION: Stock Infomation
-
+           
             #SECTION: News
-            MDGridLayout:
-                id: news_grid
-                cols: 2
-                spacing: [10,70]
-                #SECTION: News Cards
-                # NewCard:
-                # NewCard:
-                # NewCard:
-                # NewCard:
-                #/SECTION: News Cards
-                
-               
-                
-            MDLabel:
-                adaptive_size:True
+            MDBoxLayout:
+                # orientation: "vertical"
+                MDScrollView:
+                    do_scroll_x: False  # Disable horizontal scrolling
+                    do_scroll_y: True   # Enable vertical scrolling
+                    bar_width: dp(10)    # Optional: Adjust scrollbar width
 
-# NewsScreen:
+                    MDGridLayout:
+                        id: news_grid
+                        cols: 2
+                        spacing: dp(40)
+                        adaptive_height: True  # This makes it expand dynamically
+            #/SECTION: News
+

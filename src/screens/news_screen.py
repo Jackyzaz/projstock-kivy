@@ -1,48 +1,26 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from kivy.lang import Builder
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivy.metrics import dp
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
+from src.data.news_data import fetch_stock_news, fetch_stock_info
 
-MOCK_NEWS_DATA = [
-    {
-        "title": "Stock Market Hits New High",
-        "description": "Description on the description with description after description before description",
-        "source": "finance.com",
-        "time": "2 hours ago",
-    },
-    {
-        "title": "Tech Giants Report Record Profits",
-        "description": "Description on the description with description after description before description",
-        "source": "businessnews.com",
-        "time": "5 hours ago",
-    },
-    {
-        "title": "Oil Prices Surge Amid Global Tensions",
-        "description": "Description on the description with description after description before description",
-        "source": "energywatch.com",
-        "time": "8 hours ago",
-    },
-    {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
-        "source": "cryptoalert.com",
-        "time": "1 day ago",
-    },
-    {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
-        "source": "cryptoalert.com",
-        "time": "1 day ago",
-    },
-    {
-        "title": "Cryptocurrency Market Sees Volatility",
-        "description": "Description on the description with description after description before description",
-        "source": "cryptoalert.com",
-        "time": "1 day ago",
-    },
-]
+Builder.load_file("NewsScreen.kv")
+
+
+class StockInfo(MDBoxLayout):
+    """Stock Information Overview"""
+
+    stock_name = StringProperty()
+    stock_fullname = StringProperty()
+    stock_value = StringProperty()
+    stock_change = StringProperty()
+    stock_status = StringProperty()
 
 
 class NewCard(MDCard):
@@ -59,23 +37,107 @@ class NewsScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.populate_news, 0.1)  # Ensure ids are loaded
+        Clock.schedule_once(self.populate_news, 0.1)
+        Clock.schedule_once(self.get_stock_info, 0.1)  # Load initial stock data
+
+    def get_stock_data(self, stock_id):
+        """Fetch stock data and news separately and update UI"""
+        print(f"Fetching stock data for: {stock_id}")
+
+        stock_info = self.ids.get("stock_info", None)
+        news_grid = self.ids.get("news_grid", None)
+
+        if not stock_info or not news_grid:
+            print("Error: stock_info or news_grid not found in KV file.")
+            return
+
+        # Fetch stock details
+        stock_data = fetch_stock_info(stock_id.upper())
+
+        # Fetch stock news
+        news_data = fetch_stock_news(stock_id.upper())
+
+        # Update stock UI
+        stock_info.clear_widgets()
+        stock_info.add_widget(
+            StockInfo(
+                stock_name=stock_data.get("stock_name", "N/A"),
+                stock_fullname=stock_data.get("stock_fullname", "N/A"),
+                stock_value=str(stock_data.get("stock_value", "N/A")),
+                stock_change=str(stock_data.get("stock_change", "N/A")),
+                stock_status=stock_data.get("stock_status", "N/A"),
+            )
+        )
+
+        # Update news UI
+        news_grid.clear_widgets()
+        for news in news_data:
+            news_card = NewCard(
+                source=news.get("provider", ""),
+                title=news.get("title", "No title available"),
+                description=news.get("summary", "No summary available"),
+                time=news.get("pubDate", "Unknown date"),
+            )
+            news_grid.add_widget(news_card)
+
+    def get_stock_info(self, dt=None):
+        """Load default stock information"""
+
+        DEFAULT_STOCK_ID = "AAPL"
+
+        stock_info = self.ids.get("stock_info", None)
+        news_grid = self.ids.get("news_grid", None)
+
+        if not stock_info or not news_grid:
+            print("Error: stock_info or news_grid not found in KV file.")
+            return
+
+        # Fetch stock details
+        stock_data = fetch_stock_info(DEFAULT_STOCK_ID.upper())
+
+        # Fetch stock news
+        news_data = fetch_stock_news(DEFAULT_STOCK_ID.upper())
+
+        # Update stock UI
+        stock_info.clear_widgets()
+        stock_info.add_widget(
+            StockInfo(
+                stock_name=stock_data.get("stock_name", "N/A"),
+                stock_fullname=stock_data.get("stock_fullname", "N/A"),
+                stock_value=str(stock_data.get("stock_value", "N/A")),
+                stock_change=str(stock_data.get("stock_change", "N/A")),
+                stock_status=stock_data.get("stock_status", "N/A"),
+            )
+        )
+
+        # Update news UI
+        news_grid.clear_widgets()
+        for news in news_data:
+            news_card = NewCard(
+                source=news.get("provider", ""),
+                title=news.get("title", "No title available"),
+                description=news.get("summary", "No summary available"),
+                time=news.get("pubDate", "Unknown date"),
+            )
+            news_grid.add_widget(news_card)
 
     def populate_news(self, dt):
-        """Populate the grid with mock data"""
+        """Populate the grid with mock news data"""
         news_grid = self.ids.get("news_grid", None)
 
         if not news_grid:
             print("Error: news_grid not found in KV file.")
             return
 
+        # Clear previous news
         news_grid.clear_widgets()
 
-        for news in MOCK_NEWS_DATA:
+        # Populate with news
+        for news in fetch_stock_news("default"):  # Fetch default news initially
             news_card = NewCard(
+                source=news["source"],
                 title=news["title"],
                 description=news["description"],
-                source=news["source"],
                 time=news["time"],
             )
             news_grid.add_widget(news_card)

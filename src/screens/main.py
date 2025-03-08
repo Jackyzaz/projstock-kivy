@@ -11,15 +11,16 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivymd.tools.hotreload.app import MDApp
 
-Builder.load_file('NewsScreen.kv')
-Builder.load_file('HomeScreen.kv')
-Builder.load_file('SearchScreen.kv')
+
+Builder.load_file("HomeScreen.kv")
+Builder.load_file("SearchScreen.kv")
+
 
 class MainApp(MDApp):
     # KV_FILES = ["./src/screens/SearchScreen.kv"]
     # DEBUG=True
 
-#Just build_app and delete first=False
+    # Just build_app and delete first=False
     def build(self):
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
@@ -30,15 +31,15 @@ class MainApp(MDApp):
         screen_manager.add_widget(NewsScreen(name="news"))
         screen_manager.add_widget(HomeScreen(name="home"))
 
-
         root = Builder.load_file("main.kv")
 
         screen_manager.current = "search"
 
         return root
-    
+
     def switch_screen(self, screen_name):
-            self.root.ids.screen_manager.current = screen_name
+        self.root.ids.screen_manager.current = screen_name
+
 
 if __name__ == "__main__":
     MainApp().run()

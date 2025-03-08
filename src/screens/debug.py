@@ -13,7 +13,8 @@ from kivy.core.window import Window
 
 # Builder.load_file("NewsScreen.kv")
 # Builder.load_file("HomeScreen.kv")
-Window.size = (1280, 720)
+Window.size = (1366, 768)
+Window.maximize()
 
 
 class DebugApp(MDApp):
