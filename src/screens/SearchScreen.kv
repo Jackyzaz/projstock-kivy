@@ -2,3 +2,17 @@
     orientation: "vertical"
     padding: "20dp"
     spacing: "20dp"
+
+    MDTextField:
+        id: search_input
+        hint_text: "Enter stock symbol or company name (e.g., AAPL or Apple)"
+        helper_text: "Type to see suggestions"
+        helper_text_mode: "persistent"
+
+    MDRaisedButton:
+        text: "Fetch Data"
+        md_bg_color: 1, 0.34, 0.13, 1
+        on_press: root.fetch_data(self)
+
+    Widget:
+        # Placeholder สำหรับกราฟ (จัดการใน .py)
