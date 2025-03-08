@@ -62,7 +62,7 @@ def plot_stock_data(ticker, period, interval):
         overall_color = '#4CFF4C' 
     
     # Spline interpolation for smoother line
-    spl_close = splrep(data['Datetime'].astype(int) / 10**9, data['Close_smooth'], s=0.9)
+    spl_close = splrep(data['Datetime'].astype(int) / 10**9, data['Close_smooth'], s=len(data) * 0.01)
     
     plt.style.use('dark_background')
     plt.figure(figsize=(10, 6))
