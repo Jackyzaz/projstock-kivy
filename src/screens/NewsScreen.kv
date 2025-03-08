@@ -1,47 +1,45 @@
 #:import datetime datetime.datetime
-# <NewCard@MDBoxLayout>:
-#     id: stock_box
-#     md_bg_color: 0.1, 0.1, 0.1, 1
-#     orientation: "vertical"
-#     spacing: dp(5)
-#     minimum_height: dp(100)
-#     # md_bg_color: 0.2, 0.2, 0.2, 1
-#     spacing: dp(20)
+<NewCard>:
+    id: stock_box
+    orientation: "vertical"
+    minimum_height: dp(100)
+    md_bg_color: 0.1, 0.1, 0.1, 1
+    size_hint: [1, None]
+    height: dp(120)
+    elevation: 5
+    spacing: dp(20)
 
-#     MDLabel:
-#         text: "stock.com"
-#         font_style: "Caption"
-#         font_size: "15sp"
-#         adaptive_size: True
+    MDLabel:
+        text: root.source
+        font_style: "Caption"
+        font_size: "15sp"
+        adaptive_size: True
     
-#     MDLabel:
-#         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis "
-#         shorten: False
-#         font_style: "H6"
-#         font_size: "20sp"
-#         halign: "left"
-#         valign: "top"
-#         adaptive_height: True
-#         max_lines: 2  
-#     MDLabel:
-#         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
-#         font_style: "Caption"
-#         font_size: "18sp"
-#         halign: "left"
-#         valign: "top"
-#         shorten: True
-#         shorten_from: "right"  
-#         max_lines: 1
-        
-#         # adaptive_size: True
-    
-#     MDLabel:
-#         text: "18 hours ago"
-#         font_style: "Caption"
-#         font_size: "15sp"
-#         halign: "left"
-#         valign: "top"
-#         adaptive_size: True
+    MDLabel:
+        text: root.title
+        shorten: False
+        font_style: "H6"
+        font_size: "20sp"
+        halign: "left"
+        valign: "top"
+        adaptive_height: True
+        max_lines: 2  
+    MDLabel:
+        text: root.description
+        font_style: "Caption"
+        font_size: "18sp"
+        halign: "left"
+        valign: "top"
+        shorten: True
+        shorten_from: "right"  
+        max_lines: 1
+    MDLabel:
+        text: root.time
+        font_style: "Caption"
+        font_size: "15sp"
+        halign: "left"
+        valign: "top"
+        adaptive_size: True
     
 
 <NewsScreen>:

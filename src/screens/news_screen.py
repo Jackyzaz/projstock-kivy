@@ -3,6 +3,7 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivy.metrics import dp
+from kivy.properties import StringProperty
 
 MOCK_NEWS_DATA = [
     {
@@ -29,36 +30,28 @@ MOCK_NEWS_DATA = [
         "source": "cryptoalert.com",
         "time": "1 day ago",
     },
+    {
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description",
+        "source": "cryptoalert.com",
+        "time": "1 day ago",
+    },
+    {
+        "title": "Cryptocurrency Market Sees Volatility",
+        "description": "Description on the description with description after description before description",
+        "source": "cryptoalert.com",
+        "time": "1 day ago",
+    },
 ]
 
 
 class NewCard(MDCard):
     """Dynamically generated News Card"""
 
-    def __init__(self, title, description, source, time, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = "vertical"
-        self.md_bg_color = (0.1, 0.1, 0.1, 1)
-        self.size_hint = (1, None)
-        self.height = dp(120)
-        self.elevation = 5
-        self.spacing = dp(20)
-
-        self.add_widget(MDLabel(text=source, font_style="Caption", font_size="15sp"))
-
-        self.add_widget(
-            MDLabel(
-                text=title,
-                font_style="H6",
-                font_size="20sp",
-                max_lines=2,
-                adaptive_height=True,
-            )
-        )
-        self.add_widget(
-            MDLabel(text=description, font_style="H6", font_size="20sp", max_lines=2)
-        )
-        self.add_widget(MDLabel(text=time, font_style="Caption", font_size="15sp"))
+    title = StringProperty()
+    description = StringProperty()
+    source = StringProperty()
+    time = StringProperty()
 
 
 class NewsScreen(MDScreen):
