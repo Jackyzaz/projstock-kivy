@@ -135,23 +135,25 @@ class HomeScreen(MDScreen):
         for stock, data in self.stock_data.items():
             if data is None or data.empty:
                 continue
+
             latest = data.iloc[-1]
             close_prices = data["Close"].dropna()
-            start_price, end_price = close_prices.iloc[0], close_prices.iloc[-1]
-            avg_return = (
-                ((end_price - start_price) / start_price) * 100
-                if len(close_prices) > 1
-                else 0.00
-            )
+
+            if len(close_prices) > 1:
+                start_price, end_price = close_prices.iloc[0], close_prices.iloc[-1]
+                avg_return = ((end_price - start_price) / start_price) * 100
+            else:
+                avg_return = 0.00
+
             change = latest["Close"] - latest["Open"]
             gain = (change / latest["Open"]) * 100
 
             self.row_data.append(
                 (
                     stock,
-                    f"${latest['High'].iloc[0]:.2f}",
-                    f"${latest['Low'].iloc[0]:.2f}",
-                    f"${latest['Close'].iloc[0]:.2f}",
+                    f"${latest['High']:.2f}",
+                    f"${latest['Low']:.2f}",
+                    f"${latest['Close']:.2f}",
                     self.format_value(change),
                     self.format_value(gain),
                     self.format_value(avg_return),
