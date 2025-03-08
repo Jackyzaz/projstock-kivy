@@ -14,7 +14,7 @@ class SearchScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        plt = plot_stock_data("GOOGL", "1y", "1d")
+        plt = plot_stock_data("NVDA", "1y", "1d")
 
         self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
