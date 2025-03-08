@@ -2,12 +2,15 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from kivy.lang import Builder
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from src.data.news_data import fetch_stock_news, fetch_stock_info
+
+Builder.load_file("NewsScreen.kv")
 
 
 class StockInfo(MDBoxLayout):
