@@ -12,11 +12,6 @@ from kivy.uix.image import Image
 from kivymd.tools.hotreload.app import MDApp
 from kivy.core.window import Window
 
-
-Builder.load_file("HomeScreen.kv")
-Builder.load_file("SearchScreen.kv")
-
-
 class MainApp(MDApp):
     # KV_FILES = ["./src/screens/SearchScreen.kv"]
     # DEBUG=True
