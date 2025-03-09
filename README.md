@@ -34,61 +34,73 @@ The Favorite Stocks Page allows users to track and manage a personalized list of
 ![Screen Recording 2025-03-09 225027](https://github.com/user-attachments/assets/9ec8da9f-b68b-49ff-ac84-0bf6eda815e7)
 
 ## Application Materials
-### Widgets (47 totals)
+### Widgets (58 totals)
 ```
 main.kv (11)
-  MDBoxLayout x1
-  | MDNavigationRail x1
-  |   |-MDNavigationRailFabButton x1
-  |   |-MDNavigationRailItem x4
-  |-MDScreenManager x1
-      |-HomeScreen x1
-      |-SearchScreen x1
-      |-NewsScreen x1
-      |-FavoriteScreen x1
-```
-```
+├── MDBoxLayout (x1)
+│   ├── MDNavigationRail (x1)
+│   │   ├── MDNavigationRailFabButton (x1)
+│   │   ├── MDNavigationRailItem (x4)
+│   ├── MDScreenManager (x1)
+│       ├── HomeScreen (x1)
+│       ├── SearchScreen (x1)
+│       ├── NewsScreen (x1)
+│       ├── FavoriteScreen (x1)
+
 HomeScreen.kv (9)
-  HomeScreen
-    |-MDBoxLayout x1
-      |-MDBoxLayout x1
-      |  |-MDBoxLayout x3  
-      |  |-MDLabel x2
-      |  |-MDRaisedButton x1
-      |-ScrollView X1
-```
-```
+├── HomeScreen
+│   ├── MDBoxLayout (x1)
+│   │   ├── MDBoxLayout (x1)
+│   │   │   ├── MDBoxLayout (x3)
+│   │   │   ├── MDLabel (x2)
+│   │   │   ├── MDRaisedButton (x1)
+│   │   ├── ScrollView (x1)
+
 NewsScreen.kv (24)
-  <NewsScreen>
-    |-MDBoxLayout x1
-      |-MDBoxLayout x1
-        |-MDBoxLayout x1
-        |  |-MDBoxLayout x1
-        |  | |-MDLabel x2 # Stock Info Section
-        |  |-MDBoxLayout x1
-        |    |-MDTextField x1
-        |-MDBoxLayout x1
-        |-MDBoxLayout x1
-        |-MDBoxLayout x1
-          |-MDScrollView x1
-          |-MDGridLayout x1 # News Section
-  <StockInfo>
-    |-MDBoxLayout x1
-    |  |-MDLabel x2
-    |-MDBoxLayout x1
-    |  |-MDLabel x2
-    |-MDLabel x1
+├── <NewsScreen>
+│   ├── MDBoxLayout (x1)
+│   │   ├── MDBoxLayout (x1)
+│   │   │   ├── MDBoxLayout (x1)
+│   │   │   │   ├── MDBoxLayout (x1)
+│   │   │   │   │   ├── MDLabel (x2) # Stock Info Section
+│   │   │   │   ├── MDBoxLayout (x1)
+│   │   │   │   │   ├── MDTextField (x1)
+│   │   │   ├── MDBoxLayout (x1)
+│   │   │   ├── MDBoxLayout (x1)
+│   │   │   ├── MDBoxLayout (x1)
+│   │   │   │   ├── MDScrollView (x1)
+│   │   │   │   ├── MDGridLayout (x1) # News Section
+│
+├── <StockInfo>
+│   ├── MDBoxLayout (x1)
+│   │   ├── MDLabel (x2)
+│   ├── MDBoxLayout (x1)
+│   │   ├── MDLabel (x2)
+│   ├── MDLabel (x1)
+│
+├── <NewCard>
+│   ├── MDLabel (x4)
 
-  <NewCard>
-    |-MDLabel x4
-```
-```
 SearchScreen.kv (3)
-  <SearchScreen>
-    |-MDTextField x1
-    |-MDRaisedButton x1
-    |-Widget x1 # Plot Graph Section
+├── <SearchScreen>
+│   ├── MDTextField (x1)
+│   ├── MDRaisedButton (x1)
+│   ├── Widget (x1) # Plot Graph Section
 
+search_screen.py (6)
+├── layout <BoxLayout> x1
+|   ├── search_input <MDTextField> x1
+|   ├── suggestion_list <MDList> x1
+|   ├── period_layout <BoxLayout> x1
+|   |   ├── btn <MDRectangleFlatButton> x1
+|   ├──chart <FigureCanvasKivyAgg> x1
+
+favorite_screen.py (5)
+├── layout <BoxLayout> x1
+|   ├── search_input <MDTextField> x1
+|   ├── search_button <MDRaisedButton> x1
+|   ├── scroll_view <MDScrollView> x1 
+|       ├── favorite_list <MDList> x1
 ```
 ### Callbacks (31 totals)
 ####    KV Files (9 totals)
