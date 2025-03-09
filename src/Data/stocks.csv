@@ -1,11 +1,125 @@
 symbol,company
 AAPL,Apple Inc.
-NVDA,NVIDIA Corporation
 MSFT,Microsoft Corporation
-GOOGL,Alphabet Inc.
-TSLA,Tesla, Inc.
+GOOGL,Alphabet Inc. Class A
+GOOG,Alphabet Inc. Class C
 AMZN,Amazon.com Inc.
 META,Meta Platforms Inc.
 NFLX,Netflix Inc.
-INTC,Intel Corporation
+NVDA,NVIDIA Corporation
+TSLA,Tesla Inc.
 AMD,Advanced Micro Devices Inc.
+INTC,Intel Corporation
+ADBE,Adobe Inc.
+ORCL,Oracle Corporation
+IBM,International Business Machines Corporation
+CSCO,Cisco Systems Inc.
+QCOM,QUALCOMM Incorporated
+PYPL,PayPal Holdings Inc.
+CRM,Salesforce Inc.
+XOM,Exxon Mobil Corporation
+CVX,Chevron Corporation
+GE,General Electric Company
+BA,Boeing Company
+CAT,Caterpillar Inc.
+DE,Deere & Company
+WMT,Walmart Inc.
+COST,Costco Wholesale Corporation
+TGT,Target Corporation
+MCD,McDonald's Corporation
+SBUX,Starbucks Corporation
+KO,Coca-Cola Company
+PEP,PepsiCo Inc.
+PG,Procter & Gamble Company
+JPM,JPMorgan Chase & Co.
+BAC,Bank of America Corp
+GS,Goldman Sachs Group Inc.
+AXP,American Express Company
+V,Visa Inc.
+MA,Mastercard Incorporated Class A
+JNJ,Johnson & Johnson
+PFE,Pfizer Inc.
+MRK,Merck & Co. Inc.
+ABBV,AbbVie Inc.
+LLY,Eli Lilly and Company
+PLD,Prologis Inc.
+AMT,American Tower Corporation
+
+
+PTT.BK,PTT Public Company Limited
+PTTEP.BK,PTT Exploration and Production Public Company Limited
+AOT.BK,Airports of Thailand Public Company Limited
+KBANK.BK,Kasikornbank Public Company Limited
+SCB.BK,The Siam Commercial Bank Public Company Limited
+BBL.BK,Bangkok Bank Public Company Limited
+CPALL.BK,CP All Public Company Limited
+ADVANC.BK,Advanced Info Service Public Company Limited
+TRUE.BK,True Corporation Public Company Limited
+DTAC.BK,Total Access Communication Public Company Limited
+GULF.BK,Gulf Energy Development Public Company Limited
+EA.BK,Energy Absolute Public Company Limited
+GPSC.BK,Global Power Synergy Public Company Limited
+BGRIM.BK,B.Grimm Power Public Company Limited
+TOP.BK,Thai Oil Public Company Limited
+IRPC.BK,IRPC Public Company Limited
+SCC.BK,The Siam Cement Public Company Limited
+BDMS.BK,Bangkok Dusit Medical Services Public Company Limited
+BH.BK,Bumrungrad Hospital Public Company Limited
+CPN.BK,Central Pattana Public Company Limited
+CRC.BK,Central Retail Corporation Public Company Limited
+TISCO.BK,TISCO Financial Group Public Company Limited
+KTB.BK,Krung Thai Bank Public Company Limited
+LH.BK,Land and Houses Public Company Limited
+SPALI.BK,Supalai Public Company Limited
+AP.BK,AP (Thailand) Public Company Limited
+ORI.BK,Origin Property Public Company Limited
+SIRI.BK,Sansiri Public Company Limited
+MINT.BK,Minor International Public Company Limited
+CENTEL.BK,Central Plaza Hotel Public Company Limited
+ERW.BK,The Erawan Group Public Company Limited
+MAJOR.BK,Major Cineplex Group Public Company Limited
+BTS.BK,BTS Group Holdings Public Company Limited
+BEM.BK,Bangkok Expressway and Metro Public Company Limited
+STEC.BK,Sino-Thai Engineering and Construction Public Company Limited
+ITD.BK,Italian-Thai Development Public Company Limited
+CK.BK,CH. Karnchang Public Company Limited
+DELTA.BK,Delta Electronics (Thailand) Public Company Limited
+HANA.BK,Hana Microelectronics Public Company Limited
+KCE.BK,KCE Electronics Public Company Limited
+CPF.BK,Charoen Pokphand Foods Public Company Limited
+TU.BK,Thai Union Group Public Company Limited
+GFPT.BK,GFPT Public Company Limited
+TKN.BK,Taokaenoi Food & Marketing Public Company Limited
+OSP.BK,Osotspa Public Company Limited
+CBG.BK,Carabao Group Public Company Limited
+M.BK,MK Restaurant Group Public Company Limited
+ZEN.BK,ZEN Corporation Group Public Company Limited
+SINGER.BK,Singer Thailand Public Company Limited
+JMT.BK,JMT Network Services Public Company Limited
+SAWAD.BK,Srisawad Corporation Public Company Limited
+MTC.BK,Muangthai Capital Public Company Limited
+AEONTS.BK,AEON Thana Sinsap (Thailand) Public Company Limited
+TQM.BK,TQM Corporation Public Company Limited
+BJC.BK,Berli Jucker Public Company Limited
+MAKRO.BK,Siam Makro Public Company Limited
+HMPRO.BK,Home Product Center Public Company Limited
+GLOBAL.BK,Siam Global House Public Company Limited
+DOHOME.BK,Do Home Public Company Limited
+COM7.BK,COM7 Public Company Limited
+JMART.BK,Jay Mart Public Company Limited
+SYNEX.BK,Synnex (Thailand) Public Company Limited
+RS.BK,RS Public Company Limited
+WORK.BK,Workpoint Entertainment Public Company Limited
+BEC.BK,BEC World Public Company Limited
+MONO.BK,Mono Next Public Company Limited
+PLANB.BK,Plan B Media Public Company Limited
+VGI.BK,VGI Public Company Limited
+BCH.BK,Bangkok Chain Hospital Public Company Limited
+CHG.BK,Chularat Hospital Public Company Limited
+RAM.BK,Ramkhamhaeng Hospital Public Company Limited
+PR9.BK,Praram 9 Hospital Public Company Limited
+SPRC.BK,Star Petroleum Refining Public Company Limited
+ESSO.BK,Esso (Thailand) Public Company Limited
+BCP.BK,Bangchak Corporation Public Company Limited
+AMATA.BK,Amata Corporation Public Company Limited
+ROJNA.BK,Rojana Industrial Park Public Company Limited
