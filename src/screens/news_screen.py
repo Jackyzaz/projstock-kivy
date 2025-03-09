@@ -2,6 +2,8 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from src.data.stock_data import plot_stock_data
+
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
@@ -10,6 +12,9 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from src.data.news_data import fetch_stock_news, fetch_stock_info
 import webbrowser
+
+from src.screens.favorite_manager import FavoriteManager  # Import FavoriteManager
+from src.data.auto_complete import fetch_stock_symbols
 
 Builder.load_file("NewsScreen.kv")
 
@@ -44,6 +49,7 @@ class NewsScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.stock_symbols = fetch_stock_symbols()
         Clock.schedule_once(self.get_stock_info, 1)  # Load initial stock data
 
     def get_stock_data(self, stock_id):
@@ -92,7 +98,8 @@ class NewsScreen(MDScreen):
     def get_stock_info(self, dt=None):
         """Load default stock information"""
 
-        DEFAULT_STOCK_ID = "AAPL"
+        favorite_stocks = FavoriteManager.load_favorites()
+        ticker = favorite_stocks[0] if favorite_stocks else "NVDA"
 
         stock_info = self.ids.get("stock_info", None)
         news_grid = self.ids.get("news_grid", None)
@@ -102,10 +109,10 @@ class NewsScreen(MDScreen):
             return
 
         # Fetch stock details
-        stock_data = fetch_stock_info(DEFAULT_STOCK_ID.upper())
+        stock_data = fetch_stock_info(ticker)
 
         # Fetch stock news
-        news_data = fetch_stock_news(DEFAULT_STOCK_ID.upper())
+        news_data = fetch_stock_news(ticker)
 
         # Update stock UI
         stock_info.clear_widgets()
@@ -152,3 +159,34 @@ class NewsScreen(MDScreen):
                 click_through_url=news.get("click_through_url", "Unknown date"),
             )
             news_grid.add_widget(news_card)
+
+    def auto_complete(self, instance, value):
+        """
+        ฟังก์ชัน Auto Complete (case-insensitive)
+        ค้นหาทั้ง symbol และ company
+        """
+        print(f"Text input: {value}")
+        if value:
+            suggestions = []
+            for stock in self.stock_symbols:
+                try:
+                    symbol = stock.split(" (")[0]
+                    company_name = stock.split(" (")[1][:-1] if " (" in stock else ""
+                    if value.lower() in symbol.lower() or (
+                        company_name and value.lower() in company_name.lower()
+                    ):
+                        suggestions.append(stock)
+                    elif company_name:
+                        company_words = company_name.split()
+                        if any(value.lower() in word.lower() for word in company_words):
+                            suggestions.append(stock)
+                except Exception as e:
+                    print(f"Error processing stock {stock}: {e}")
+                    continue
+            if suggestions:
+                print(f"Suggestions found: {suggestions[:3]}")
+                instance.helper_text = ", ".join(suggestions[:3])
+            else:
+                instance.helper_text = "No suggestions found"
+        else:
+            instance.helper_text = "Type to see suggestions"

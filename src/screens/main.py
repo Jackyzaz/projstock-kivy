@@ -3,14 +3,10 @@ from kivymd.uix.screenmanager import MDScreenManager
 from news_screen import NewsScreen
 from home_screen import HomeScreen
 from search_screen import SearchScreen
-from kivymd.uix.navigationdrawer import MDNavigationDrawer
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.list import OneLineIconListItem
-from kivymd.uix.relativelayout import MDRelativeLayout
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.image import Image
+from favorite_screen import FavoriteManager
 from kivymd.tools.hotreload.app import MDApp
 from kivy.core.window import Window
+
 
 class MainApp(MDApp):
     # KV_FILES = ["./src/screens/SearchScreen.kv"]
@@ -22,15 +18,17 @@ class MainApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Dark"
 
-        screen_manager = MDScreenManager()
+        self.root.ids.screen_manager.current = "home"
+        # screen_manager = MDScreenManager()
 
-        screen_manager.add_widget(SearchScreen(name="search"))
-        screen_manager.add_widget(NewsScreen(name="news"))
-        screen_manager.add_widget(HomeScreen(name="home"))
+        # screen_manager.add_widget(HomeScreen(name="home"))
+        # screen_manager.add_widget(NewsScreen(name="news"))
+        # screen_manager.add_widget(SearchScreen(name="search"))
+        # screen_manager.add_widget(SearchScreen(name="search"))
+        # screen_manager.add_widget(SearchScreen(name="search"))
 
+        # screen_manager.current = "home"
         root = Builder.load_file("main.kv")
-
-        screen_manager.current = "search"
 
         return root
 

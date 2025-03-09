@@ -22,6 +22,11 @@ MDBoxLayout:
             text: "Search"
             icon: "magnify"
             on_release: app.switch_screen("search")
+        
+        MDNavigationRailItem:
+            text: "Favorite"
+            icon: "star"
+            on_release: app.switch_screen("favorite")
 
 
 
@@ -36,3 +41,6 @@ MDBoxLayout:
 
         NewsScreen:
             name: "news"
+
+        FavoriteScreen:
+            name: "favorite"
