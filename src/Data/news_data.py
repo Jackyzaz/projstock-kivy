@@ -2,6 +2,7 @@ import yfinance as yf
 from datetime import datetime
 import concurrent.futures
 import asyncio
+import json
 
 
 def fetch_stock_info(ticker):
@@ -56,8 +57,12 @@ def fetch_stock_news_worker(ticker):
 
         formatted_news = []
         for news in news_list:
+            # print(json.dumps(news, indent=2)) # for log
             content = news.get("content", {})
-            thumbnail = content.get("thumbnail", {})
+            # Get nested value from obj
+            click_through_obj = content.get("clickThroughUrl", {})
+            click_through_url = click_through_obj.get("url", "unknow")
+
             provider = content.get("provider", {}).get("url", "Unknown Source")
             title = content.get("title", "No Title")
             summary = content.get("summary", "No Summary")
@@ -71,7 +76,7 @@ def fetch_stock_news_worker(ticker):
 
             formatted_news.append(
                 {
-                    "thumbnail": thumbnail,
+                    "click_through_url": click_through_url,
                     "provider": provider,
                     "title": title,
                     "summary": summary,

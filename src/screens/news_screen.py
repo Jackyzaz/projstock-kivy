@@ -35,6 +35,7 @@ class NewCard(MDCard):
 
     def Push(self):
         """Open news link in a WebView window"""
+        print(self.click_through_url)
         webbrowser.open(self.click_through_url)
 
 
