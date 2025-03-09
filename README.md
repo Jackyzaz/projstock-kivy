@@ -33,6 +33,61 @@ The Favorite Stocks Page allows users to track and manage a personalized list of
 
 ![Screen Recording 2025-03-09 225027](https://github.com/user-attachments/assets/9ec8da9f-b68b-49ff-ac84-0bf6eda815e7)
 
+## App API Design
+
+### Home Screen
+1. load_data()
+Description: Loads stock and news data when the screen is entered.
+```
+load_data()
+```
+3. fetch_stock_data()
+Description: Fetches stock data for the favorite stocks.
+```
+fetch_stock_data()
+```
+4. fetch_news_data()
+Description: Fetches the latest news for the first favorite stock (or NVDA if none).
+```
+fetch_news_data()
+```
+
+### News Screen
+1. get_stock_data(stock_id) 
+Description: Fetches stock data and news for a specific stock ID and updates the stock info and news grid on the screen.
+```
+get_stock_data("AAPL")
+```
+2. get_stock_info(dt=None) Description: Loads stock information for the default favorite stock or NVDA and updates the stock info and news grid.
+```
+get_stock_info()
+```
+3. auto_complete(instance, value) Description: Handles auto-suggestions for stock symbols or company names based on user input in the search bar.
+```
+auto_complete(instance, "example text")
+```
+4. Push() Description: Opens a web link for the news item in a browser when a news card is clicked.
+```
+Push()
+```
+
+### Search Screen
+1. plot_stock_data(symbol, period)
+Description: Fetches and plots the stock data for the specified symbol and time period.
+```
+plot_stock_data("AAPL", "1d")
+```
+3. fetch_stock_symbols()
+Description: Fetches a list of all available stock symbols from a CSV file for use in the auto-completion feature.
+```
+stock_symbols = fetch_stock_symbols()
+```
+4. auto_complete(instance, value)
+Description: Handles auto-suggestions for stock symbols or company names based on user input in the search bar.
+```
+auto_complete(instance, "example text")
+```
+
 ## Application Materials
 ### Widgets (58 totals)
 ```
