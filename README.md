@@ -1,6 +1,8 @@
 # Stock App
 Application for viewing stocks, stock news, stock graphs, developed with KivyMD and connect with yfinance API.
 
+This project is part of the **240-123 Data Structure Algorithm and Programming Module**
+
 ## Contributor
 [@Worachat-Songmuangnu](https://github.com/Worachat-Songmuangnu) - Worachat Songmuangnu 6710110370 <br>
 [@Pyneola](https://github.com/Pyneola) - Weera Arsasutcharit 6710110393 <br>
