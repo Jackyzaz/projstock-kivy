@@ -70,27 +70,18 @@ class SearchScreen(MDScreen):
                 text=period.upper(),
                 size_hint=(None, 1),
                 width=dp(60),
-                md_bg_color=[0.2, 0.2, 0.2, 1] if period != self.selected_period else [0.4, 0.4, 0.4, 1],  # ไฮไลต์ปุ่มที่เลือก
+                md_bg_color=[0.2, 0.2, 0.2, 1] if period != self.selected_period else [0.4, 0.4, 0.4, 1],
                 text_color=[1, 1, 1, 1]
             )
             btn.bind(on_press=lambda instance, p=period: self.update_period(p))
             self.period_buttons[period] = btn
             self.period_layout.add_widget(btn)
         self.layout.add_widget(self.period_layout)
-
-        self.fetch_button = MDRaisedButton(
-            text="Fetch Data",
-            md_bg_color=(1, 0.34, 0.13, 1),
-            on_press=self.fetch_data,
-            size_hint_y=None,
-            height=dp(48)
-        )
-        self.layout.add_widget(self.fetch_button)
         
         plt = plot_stock_data("NVDA", self.selected_period)
         if plt is None:
             self.show_error("Failed to load initial chart for NVDA")
-            self.chart = FigureCanvasKivyAgg(plt.figure())  # สร้าง figure ว่างเพื่อหลีกเลี่ยงข้อผิดพลาด
+            self.chart = FigureCanvasKivyAgg(plt.figure())
         else:
             self.chart = FigureCanvasKivyAgg(plt.gcf())
         self.layout.add_widget(self.chart)
@@ -127,7 +118,7 @@ class SearchScreen(MDScreen):
     def update_period(self, period):
         self.selected_period = period
         for p, btn in self.period_buttons.items():
-            btn.md_bg_color = [0.4, 0.4, 0.4, 1] if p == period else [0.2, 0.2, 0.2, 1]  # ไฮไลต์ปุ่มที่เลือก
+            btn.md_bg_color = [0.4, 0.4, 0.4, 1] if p == period else [0.2, 0.2, 0.2, 1]
         self.fetch_data(None)
 
     def fetch_data(self, instance):
@@ -137,20 +128,28 @@ class SearchScreen(MDScreen):
         if not symbol:
             self.show_error("Please enter a stock symbol")
             return
-        
+
         try:
             print(f"Fetching data for {symbol} with period={self.selected_period}") 
+        
+            if hasattr(self, 'chart') and self.chart:
+                self.layout.remove_widget(self.chart)
+
             plt = plot_stock_data(symbol, self.selected_period)
             if plt is None:
                 self.show_error(f"Failed to fetch data for {symbol} with period={self.selected_period}")
                 return
             self.current_symbol = symbol
-            self.chart.figure = plt.gcf()
+        
+            self.chart = FigureCanvasKivyAgg(plt.gcf())
+            self.layout.add_widget(self.chart)
             self.chart.draw()
+
             self.is_dropdown_open = False
             self.suggestion_list.height = 0
         except Exception as e:
             self.show_error(f"Error fetching {symbol}: {e}")
+
 
     def show_error(self, message):
         if self.dialog:
