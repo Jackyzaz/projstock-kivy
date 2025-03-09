@@ -1,24 +1,27 @@
 import sys
 import os
-import csv
 from kivy.lang import Builder
-from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivy_garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDRaisedButton, MDRectangleFlatButton
 from kivymd.uix.dialog import MDDialog
-from fuzzywuzzy import fuzz
+from kivymd.uix.list import MDList
+from kivy.core.window import Window
+from kivy.metrics import dp
+from kivy.uix.floatlayout import FloatLayout
+import yfinance as yf
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from src.data.stock_data import plot_stock_data
+from stock_utils import fetch_stock_symbols, handle_dropdown, update_dropdown, select_suggestion
 
 class SearchScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.stock_symbols = self.fetch_stock_symbols()
+        self.stock_symbols = fetch_stock_symbols()
         if not self.stock_symbols:
             print("No stock symbols loaded, using default list")
             self.stock_symbols = [
@@ -28,106 +31,134 @@ class SearchScreen(MDScreen):
         
         print(f"Loaded {len(self.stock_symbols)} stock symbols: {self.stock_symbols[:5]}")
 
-        self.layout = BoxLayout(orientation='vertical', padding="20dp", spacing="20dp")
+        self.main_layout = FloatLayout()
+        
+        self.layout = BoxLayout(
+            orientation='vertical', 
+            padding="20dp", 
+            spacing="20dp",
+            size_hint=(1, 1),
+            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+        )
         
         self.search_input = MDTextField(
             hint_text="Enter stock symbol or company name (e.g., AAPL or Apple)",
             helper_text="Type to see suggestions",
-            helper_text_mode="persistent"
+            helper_text_mode="persistent",
+            size_hint_y=None,
+            height=dp(48),
+            pos_hint={'top': 1}
         )
-        self.search_input.bind(text=self.on_text) 
+        self.search_input.bind(text=lambda instance, value: handle_dropdown(self, value, search_input=self.search_input, suggestion_list=self.suggestion_list, stock_symbols=self.stock_symbols), on_focus=self.on_focus)
         self.layout.add_widget(self.search_input)
-        
-        self.fetch_button = MDRaisedButton(
-            text="Fetch Data",
-            md_bg_color=(1, 0.34, 0.13, 1),
-            on_press=self.fetch_data
+
+        self.suggestion_list = MDList()
+        self.layout.add_widget(self.suggestion_list)
+
+        self.period_layout = BoxLayout(
+            orientation='horizontal',
+            spacing="5dp",
+            size_hint_y=None,
+            height=dp(40)
         )
-        self.layout.add_widget(self.fetch_button)
+
+        self.period_buttons = {}
+        periods = ["1d", "5d", "1wk", "1mo", "6mo", "1y", "max"]
+        self.selected_period = "1y"
+        for period in periods:
+            btn = MDRectangleFlatButton(
+                text=period.upper(),
+                size_hint=(None, 1),
+                width=dp(60),
+                md_bg_color=[0.2, 0.2, 0.2, 1] if period != self.selected_period else [0.4, 0.4, 0.4, 1],
+                text_color=[1, 1, 1, 1]
+            )
+            btn.bind(on_press=lambda instance, p=period: self.update_period(p))
+            self.period_buttons[period] = btn
+            self.period_layout.add_widget(btn)
+        self.layout.add_widget(self.period_layout)
         
-        plt = plot_stock_data("NVDA", "1y", "1d")
-        self.chart = FigureCanvasKivyAgg(plt.gcf())
+        plt = plot_stock_data("NVDA", self.selected_period)
+        if plt is None:
+            self.show_error("Failed to load initial chart for NVDA")
+            self.chart = FigureCanvasKivyAgg(plt.figure())
+        else:
+            self.chart = FigureCanvasKivyAgg(plt.gcf())
         self.layout.add_widget(self.chart)
         
-        self.add_widget(self.layout)
+        self.main_layout.add_widget(self.layout)
+        self.add_widget(self.main_layout)
+
         self.dialog = None
         self.current_symbol = "NVDA"
+        self.is_dropdown_open = False
+        self.selected_index = -1 
+        self.suggestions = []  
 
-    def fetch_stock_symbols(self):
-        """
-        อ่านสัญลักษณ์หุ้นจากไฟล์ CSV
-        """
-        stock_file = os.path.join(os.path.dirname(__file__), "stocks.csv")
-        stock_list = []
-        try:
-            with open(stock_file, mode='r', encoding='utf-8') as file:
-                reader = csv.reader(file)
-                next(reader)
-                for row in reader:
-                    if len(row) >= 2:
-                        symbol, company = row[0], row[1]
-                        stock_list.append(f"{symbol} ({company})")
-            return stock_list
-        except FileNotFoundError:
-            print("stocks.csv not found, using default list")
-            return []
-        except Exception as e:
-            print(f"Error reading stocks.csv: {e}")
-            return []
+        self.search_input.bind(
+            size=self.update_dropdown_pos,
+            pos=self.update_dropdown_pos
+        )
+        
+        Window.bind(on_touch_down=lambda instance, value: handle_dropdown(self, value, search_input=self.search_input, suggestion_list=self.suggestion_list, stock_symbols=self.stock_symbols))
+        Window.bind(on_key_down=lambda instance, value1, value2, value3, value4: handle_dropdown(self, keycode=value1, search_input=self.search_input, suggestion_list=self.suggestion_list, stock_symbols=self.stock_symbols))
 
-    def on_text(self, instance, value):
-        """
-        ฟังก์ชัน Auto Complete (case-insensitive)
-        ค้นหาทั้ง symbol และ company
-        """
-        print(f"Text input: {value}")
-        if value:
-            suggestions = []
-            for stock in self.stock_symbols:
-                try:
-                    symbol = stock.split(" (")[0]
-                    company_name = stock.split(" (")[1][:-1] if " (" in stock else ""
-                    if value.lower() in symbol.lower() or (company_name and value.lower() in company_name.lower()):
-                        suggestions.append(stock)
-                    elif company_name:
-                        company_words = company_name.split()
-                        if any(value.lower() in word.lower() for word in company_words):
-                            suggestions.append(stock)
-                except Exception as e:
-                    print(f"Error processing stock {stock}: {e}")
-                    continue
-            if suggestions:
-                print(f"Suggestions found: {suggestions[:3]}")
-                self.search_input.helper_text = ", ".join(suggestions[:3]) 
-            else:
-                self.search_input.helper_text = "No suggestions found"
-        else:
-            self.search_input.helper_text = "Type to see suggestions"
+    def update_dropdown_pos(self, instance, value):
+        if hasattr(self.search_input, 'to_window'):
+            x, y = self.search_input.to_window(self.search_input.x, self.search_input.y)
+            if self.suggestion_list:  
+                self.suggestion_list.pos = (x, y - self.suggestion_list.height)
+            self.suggestion_list.width = self.search_input.width
+
+    def on_focus(self, instance, value):
+        if value and self.suggestions: 
+            self.is_dropdown_open = True
+            update_dropdown(self, self.suggestion_list, self.suggestions, self.selected_index)
+
+    def update_period(self, period):
+        self.selected_period = period
+        for p, btn in self.period_buttons.items():
+            btn.md_bg_color = [0.4, 0.4, 0.4, 1] if p == period else [0.2, 0.2, 0.2, 1]
+        self.fetch_data(None)
 
     def fetch_data(self, instance):
         symbol = self.search_input.text.split(" (")[0] if "(" in self.search_input.text else self.search_input.text
         if not symbol:
+            symbol = self.current_symbol 
+        if not symbol:
             self.show_error("Please enter a stock symbol")
             return
-        
+
         try:
-            plt = plot_stock_data(symbol, "1y", "1d")
+            print(f"Fetching data for {symbol} with period={self.selected_period}") 
+        
+            if hasattr(self, 'chart') and self.chart:
+                self.layout.remove_widget(self.chart)
+
+            plt = plot_stock_data(symbol, self.selected_period)
+            if plt is None:
+                self.show_error(f"Failed to fetch data for {symbol} with period={self.selected_period}")
+                return
             self.current_symbol = symbol
-            self.chart.figure = plt.gcf()
+        
+            self.chart = FigureCanvasKivyAgg(plt.gcf())
+            self.layout.add_widget(self.chart)
             self.chart.draw()
+
+            self.is_dropdown_open = False
+            self.suggestion_list.height = 0
         except Exception as e:
             self.show_error(f"Error fetching {symbol}: {e}")
+
 
     def show_error(self, message):
         if self.dialog:
             self.dialog.dismiss()
         self.dialog = MDDialog(
             text=message,
-            buttons=[
-                MDRaisedButton(
-                    text="OK",
-                    on_press=lambda x: self.dialog.dismiss()
-                )
-            ]
+            buttons=[MDRaisedButton(
+                text="OK",
+                on_press=lambda x: self.dialog.dismiss()
+            )]
         )
         self.dialog.open()

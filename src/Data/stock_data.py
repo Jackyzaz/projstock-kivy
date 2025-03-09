@@ -78,20 +78,51 @@ def get_multiple_data(tickers, period, interval):
     return asyncio.run(get_multiple_data_async(tickers, period, interval))
 
 
-def plot_stock_data(ticker, period, interval):
+valid_pairs = {
+    "1d": "1h",  
+    "5d": "1h", 
+    "1wk": "1d", 
+    "1mo": "1d", 
+    "6mo": "1d",
+    "1y": "1wk",
+    "max": "1mo",
+}
+
+def get_data(ticker, period, interval):
+    """
+    ดึงข้อมูลหุ้นจาก yfinance
+    """
+    try:
+        stock = yf.Ticker(ticker)
+        data = stock.history(period=period, interval=interval)
+        if data.empty:
+            print(f"⚠️ No data retrieved for {ticker} with period={period}, interval={interval}.")
+            return pd.DataFrame()
+        data.reset_index(inplace=True)
+        data["Datetime"] = pd.to_datetime(data["Date"] if "Date" in data.columns else data.index)
+        return data
+    except Exception as e:
+        print(f"Error fetching data for {ticker} with period={period}, interval={interval}: {e}")
+        return pd.DataFrame()
+
+def plot_stock_data(ticker, period):
+    if period not in valid_pairs:
+        print(f"⚠️ Invalid period: {period}")
+        return
+    
+    interval = valid_pairs[period]
+
     data = get_data(ticker, period, interval)
     if data.empty:
-        print(f"⚠️ No data retrieved for {ticker}.")
+        print(f"⚠️ No data retrieved for {ticker} with period={period}, interval={interval}.")
         return
 
-    # Calculate smoothed close prices
     data["Close_smooth"] = data["Close"].rolling(window=7, min_periods=1).mean()
     if data["Close_smooth"].iloc[-1] < data["Close_smooth"].iloc[0]:
         overall_color = "#FF4C4C"
     else:
         overall_color = "#4CFF4C"
 
-    # Spline interpolation for smoother line
     spl_close = splrep(
         data["Datetime"].astype(int) / 10**9, data["Close_smooth"], s=len(data) * 0.01
     )

@@ -8,11 +8,10 @@
         hint_text: "Enter stock symbol or company name (e.g., AAPL or Apple)"
         helper_text: "Type to see suggestions"
         helper_text_mode: "persistent"
-
-    MDRaisedButton:
-        text: "Fetch Data"
-        md_bg_color: 1, 0.34, 0.13, 1
-        on_press: root.fetch_data(self)
+        size_hint_y: None
+        height: "48dp"
+        pos_hint: {'top': 1}
 
     Widget:
-        # Placeholder สำหรับกราฟ (จัดการใน .py)
+        id: chart_placeholder
+        size_hint_y: 1
