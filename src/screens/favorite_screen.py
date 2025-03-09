@@ -21,10 +21,6 @@ class FavoriteScreen(MDScreen):
         super().__init__(**kwargs)
         self.layout = MDBoxLayout(orientation="vertical")
 
-        # Toolbar
-        self.toolbar = MDTopAppBar(title="Favorite Stocks")
-        self.layout.add_widget(self.toolbar)
-
         # Search Input
         self.stock_symbols = fetch_stock_symbols()
         self.search_input = MDTextField(
