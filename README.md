@@ -157,66 +157,45 @@ favorite_screen.py (5)
 |   ├── scroll_view <MDScrollView> x1 
 |       ├── favorite_list <MDList> x1
 ```
-### Callbacks (31 totals)
-####    KV Files (9 totals)
+### Callbacks (22 totals)
 ```
- kv/
-  ├── main.kv (4)
-  │     ├── MDNavigationRailFabButton - on_release: app.switch_screen("home")
-  │     ├── MDNavigationRailItem (x3) - on_release: app.switch_screen("news" | "search" | "favorite")
-  │
-  ├── HomeScreen.kv (1)
-  │     ├── MDRaisedButton - on_release: root.refresh_data()
-  │
-  ├── NewsScreen.kv (3)
-  │     ├── <NewCard> - on_release: root.Push()
-  │     ├── <NewsScreen> - MDTextField (on_text: root.auto_complete(self, self.text))
-  │     │                ├── MDTextField (on_text_validate: root.get_stock_data(self.text.upper()))
-  │
-  ├── SearchScreen.kv (1)
-  │     ├── <SearchScreen> - MDRaisedButton (on_press: root.fetch_data(self))
-```
-
-####     Python Files (22 totals)
-```
- src/
-  ├── main.py (1)
-  │     ├── switch_screen(self, screen_name) - Called by navigation buttons
-  │
-  ├── home_screen.py (5)
-  │     ├── Clock.schedule_interval(self.update_datetime, 1) - Update timestamp every second
-  │     ├── Clock.schedule_once(self.load_data, 0) - Load data on screen enter
-  │     ├── Clock.schedule_once(self.fetch_stock_data, 0.2) - Fetch stock data after delay
-  │     ├── Clock.schedule_once(self.fetch_news_data, 0.2) - Fetch news after delay
-  │
-  ├── favorite_screen.py (3)
-  │     ├── MDTextField - self.search_input.bind(text=self.on_text)
-  │     ├── MDRaisedButton - on_release: self.add_stock
-  │     ├── IconLeftWidget - on_release: lambda x, s=stock_code: self.remove_favorite(s)
-  │
-  ├── news_screen.py (3)
-  │     ├── Clock.schedule_once(self.get_stock_info, 1) - Load stock info on startup
-  │     ├── Clock.schedule_once(self.populate_news, dt) - Populate news dynamically
-  │     ├── MDTextField - on_text: root.auto_complete(self, self.text)
-  │
-  ├── search_screen.py (5)
-  │     ├── MDTextField - self.search_input.bind(text=..., on_focus=self.on_focus)
-  │     ├── MDRectangleFlatButton - on_press=lambda instance, p=period: self.update_period(p)
-  │     ├── Window.bind(on_touch_down=...) - Detect external clicks to close dropdown
-  │     ├── Window.bind(on_key_down=...) - Handle keyboard navigation for suggestions
-  │     ├── MDRaisedButton - on_press=lambda x: self.dialog.dismiss()
-  │
-  ├── stock_utils.py (3)
-  │     ├── OneLineListItem - on_press=lambda x, s=stock_item: select_suggestion(...)
-  │     ├── Window.bind(on_touch_down=...) - Close suggestion dropdown on external click
-  │     ├── Window.bind(on_key_down=...) - Handle keyboard interaction in dropdown
+  src/
+  ├── screens/
+  │     ├── main.py (1)
+  │     │     ├── switch_screen(self, screen_name) - Called by navigation buttons
+  │     ├── home_screen.py (5)
+  │     │     ├── Clock.schedule_interval(self.update_datetime, 1) - Update timestamp every second
+  │     │     ├── Clock.schedule_once(self.load_data, 0) - Load data on screen enter
+  │     │     ├── Clock.schedule_once(self.fetch_stock_data, 0.2) - Fetch stock data after delay
+  │     │     ├── Clock.schedule_once(self.fetch_news_data, 0.2) - Fetch news after delay
+  │     │
+  │     ├── favorite_screen.py (3)
+  │     │     ├── MDTextField - self.search_input.bind(text=self.on_text)
+  │     │     ├── MDRaisedButton - on_release: self.add_stock
+  │     │     ├── IconLeftWidget - on_release: lambda x, s=stock_code: self.remove_favorite(s)
+  │     │
+  │     ├── news_screen.py (3)
+  │     │     ├── Clock.schedule_once(self.get_stock_info, 1) - Load stock info on startup
+  │     │     ├── Clock.schedule_once(self.populate_news, dt) - Populate news dynamically
+  │     │     ├── MDTextField - on_text: root.auto_complete(self, self.text)
+  │     │
+  │     ├── search_screen.py (5)
+  │     │     ├── MDTextField - self.search_input.bind(text=..., on_focus=self.on_focus)
+  │     │     ├── MDRectangleFlatButton - on_press=lambda instance, p=period: self.update_period(p)
+  │     │     ├── Window.bind(on_touch_down=...) - Detect external clicks to close dropdown
+  │     │     ├── Window.bind(on_key_down=...) - Handle keyboard navigation for suggestions
+  │     │     ├── MDRaisedButton - on_press=lambda x: self.dialog.dismiss()
+  │     │
+  │     ├── stock_utils.py (3)
+  │     │     ├── OneLineListItem - on_press=lambda x, s=stock_item: select_suggestion(...)
+  │     │     ├── Window.bind(on_touch_down=...) - Close suggestion dropdown on external click
+  │     │     ├── Window.bind(on_key_down=...) - Handle keyboard interaction in dropdown
   │
   ├── data/
-  │     news_data.py (1)
-  │       ├── fetch_stock_news_async(ticker) - Used in async execution (ThreadPoolExecutor)
-  │     stock_data.py (1)
-  │       ├── get_multiple_data_async(tickers, period, interval) - Used in async execution (ThreadPoolExecutor)
-
+  │     ├── news_data.py (1)
+  │     │     ├── fetch_stock_news_async(ticker) - Used in async execution (ThreadPoolExecutor)
+  │     ├── stock_data.py (1)
+  │     │     ├── get_multiple_data_async(tickers, period, interval) - Used in async execution (ThreadPoolExecutor)
 ```
 
 
