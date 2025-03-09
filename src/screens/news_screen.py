@@ -11,6 +11,8 @@ from kivy.properties import StringProperty
 from src.data.news_data import fetch_stock_news, fetch_stock_info
 import webbrowser
 
+from src.screens.favorite_manager import FavoriteManager  # Import FavoriteManager
+
 Builder.load_file("NewsScreen.kv")
 
 
@@ -92,7 +94,8 @@ class NewsScreen(MDScreen):
     def get_stock_info(self, dt=None):
         """Load default stock information"""
 
-        DEFAULT_STOCK_ID = "AAPL"
+        favorite_stocks = FavoriteManager.load_favorites()
+        ticker = favorite_stocks[0] if favorite_stocks else "NVDA"
 
         stock_info = self.ids.get("stock_info", None)
         news_grid = self.ids.get("news_grid", None)
@@ -102,10 +105,10 @@ class NewsScreen(MDScreen):
             return
 
         # Fetch stock details
-        stock_data = fetch_stock_info(DEFAULT_STOCK_ID.upper())
+        stock_data = fetch_stock_info(ticker)
 
         # Fetch stock news
-        news_data = fetch_stock_news(DEFAULT_STOCK_ID.upper())
+        news_data = fetch_stock_news(ticker)
 
         # Update stock UI
         stock_info.clear_widgets()

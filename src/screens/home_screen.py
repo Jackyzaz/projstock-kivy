@@ -15,6 +15,7 @@ from kivymd.uix.card import MDCard
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from src.data.stock_data import get_multiple_data
 from src.data.news_data import fetch_stock_news
+from src.screens.favorite_manager import FavoriteManager  # Import FavoriteManager
 
 KV_PATH = os.path.join(os.path.dirname(__file__), "HomeScreen.kv")
 Builder.load_file(KV_PATH)
@@ -33,6 +34,7 @@ class HomeScreen(MDScreen):
         Clock.schedule_once(self.load_data, 0)
 
     def load_data(self, *args):
+        """Loads stock and news data when the screen is entered."""
         if self.stock_data is None:
             self.show_loading_label("stock_table_box", "Loading stock data...")
             Clock.schedule_once(self.fetch_stock_data, 0.2)
@@ -42,22 +44,19 @@ class HomeScreen(MDScreen):
             Clock.schedule_once(self.fetch_news_data, 0.2)
 
     def fetch_stock_data(self, *args):
-        stock_list = [
-            "AAPL",
-            "GOOGL",
-            "MSFT",
-            "AMZN",
-            "TSLA",
-            "NFLX",
-            "NVDA",
-            "META",
-        ]
+        """Fetch stock data only for saved favorites."""
+        stock_list = FavoriteManager.load_favorites()  # Get favorite stocks
+        if not stock_list:
+            self.show_loading_label("stock_table_box", "No favorite stocks found.")
+            return
+
         self.stock_data = get_multiple_data(stock_list, "5d", "1d")
         self.update_stock_table()
 
-    def fetch_news_data(self, ticker="NVDA", *args):
-        if not isinstance(ticker, str):
-            ticker = "NVDA"
+    def fetch_news_data(self, *args):
+        """Fetch news for the first favorite stock or default to NVDA."""
+        favorite_stocks = FavoriteManager.load_favorites()
+        ticker = favorite_stocks[0] if favorite_stocks else "NVDA"
         self.news_data = fetch_stock_news(ticker)
         if hasattr(self, "show_latest_news"):
             self.show_latest_news(self)
@@ -132,6 +131,7 @@ class HomeScreen(MDScreen):
         latest_news_box.add_widget(scroll_view)
 
     def update_stock_table(self, *args):
+        """Updates the stock table UI with favorite stocks."""
         if not self.stock_data:
             return
 
@@ -185,12 +185,14 @@ class HomeScreen(MDScreen):
         self.replace_widget("stock_table_box", self.stock_table)
 
     def update_datetime(self, dt):
+        """Updates the timestamp of the last stock update."""
         if hasattr(self.ids, "stock_datetime"):
             self.ids.stock_datetime.text = (
                 f"Updated: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
             )
 
     def show_loading_label(self, widget_id, text):
+        """Displays a loading label before data is loaded."""
         if hasattr(self.ids, widget_id):
             self.replace_widget(
                 widget_id,
@@ -203,16 +205,19 @@ class HomeScreen(MDScreen):
             )
 
     def replace_widget(self, widget_id, new_widget):
+        """Replaces an existing widget with a new one."""
         if hasattr(self.ids, widget_id):
             self.ids[widget_id].clear_widgets()
             self.ids[widget_id].add_widget(new_widget)
 
+    def refresh_data(self):
+        """Refresh stock data from favorites."""
+        self.stock_data = self.news_data = self.stock_table = None
+        self.load_data()
+
     @staticmethod
     def format_value(value):
+        """Formats percentage values for stock changes."""
         if isinstance(value, pd.Series):
             value = value.iloc[0]
         return f"[color={'00FF00' if value > 0 else 'FF0000' if value < 0 else 'FFFFFF'}]{value:.2f}%[/color]"
-
-    def refresh_data(self):
-        self.stock_data = self.news_data = self.stock_table = None
-        self.load_data()
