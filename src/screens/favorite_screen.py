@@ -9,6 +9,12 @@ from kivymd.uix.button import MDRaisedButton
 from kivy.clock import Clock
 from favorite_manager import FavoriteManager
 
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from src.data.auto_complete import fetch_stock_symbols
+
 
 class FavoriteScreen(MDScreen):
     def __init__(self, **kwargs):
@@ -20,12 +26,16 @@ class FavoriteScreen(MDScreen):
         self.layout.add_widget(self.toolbar)
 
         # Search Input
-        self.stock_input = MDTextField(
-            hint_text="Enter stock code (e.g., AAPL, TSLA)",
+        self.stock_symbols = fetch_stock_symbols()
+        self.search_input = MDTextField(
             size_hint_x=0.9,
             pos_hint={"center_x": 0.5},
+            hint_text="Enter stock symbol or company name (e.g., AAPL or Apple)",
+            helper_text="Type to see suggestions",
+            helper_text_mode="persistent",
         )
-        self.layout.add_widget(self.stock_input)
+        self.search_input.bind(text=self.on_text)
+        self.layout.add_widget(self.search_input)
 
         # Search Button
         self.search_button = MDRaisedButton(
@@ -41,6 +51,37 @@ class FavoriteScreen(MDScreen):
 
         self.add_widget(self.layout)
         self.load_favorites()
+
+    def on_text(self, instance, value):
+        """
+        ฟังก์ชัน Auto Complete (case-insensitive)
+        ค้นหาทั้ง symbol และ company
+        """
+        print(f"Text input: {value}")
+        if value:
+            suggestions = []
+            for stock in self.stock_symbols:
+                try:
+                    symbol = stock.split(" (")[0]
+                    company_name = stock.split(" (")[1][:-1] if " (" in stock else ""
+                    if value.lower() in symbol.lower() or (
+                        company_name and value.lower() in company_name.lower()
+                    ):
+                        suggestions.append(stock)
+                    elif company_name:
+                        company_words = company_name.split()
+                        if any(value.lower() in word.lower() for word in company_words):
+                            suggestions.append(stock)
+                except Exception as e:
+                    print(f"Error processing stock {stock}: {e}")
+                    continue
+            if suggestions:
+                print(f"Suggestions found: {suggestions[:3]}")
+                self.search_input.helper_text = ", ".join(suggestions[:3])
+            else:
+                self.search_input.helper_text = "No suggestions found"
+        else:
+            self.search_input.helper_text = "Type to see suggestions"
 
     def load_favorites(self):
         """Loads and displays favorite stocks."""
@@ -59,12 +100,12 @@ class FavoriteScreen(MDScreen):
 
     def add_stock(self, instance):
         """Adds a searched stock to the favorites list."""
-        stock_code = self.stock_input.text.strip().upper()
+        stock_code = self.search_input.text.strip().upper()
 
         if stock_code and stock_code not in FavoriteManager.load_favorites():
             FavoriteManager.add_favorite(stock_code)
             self.add_stock_item(stock_code)
-            self.stock_input.text = ""  # Clear input field after adding
+            self.search_input.text = ""  # Clear input field after adding
 
     def remove_favorite(self, stock_code):
         """Removes a stock from favorites and refreshes the list."""

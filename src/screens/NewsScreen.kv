@@ -98,7 +98,7 @@
             orientation: "vertical"
             spacing: dp(5)
             padding: dp(15)
-            minimum_height: dp(100)
+            minimum_height: dp(120)
 
             MDBoxLayout:
                 size_hint_y: 0.15
@@ -133,12 +133,15 @@
                     MDTextField:
                         id: stock_search
                         mode: "rectangle"
-                        hint_text: "Search Stock Name"
-                        helper_text: "Search Stock Name"
+                        hint_text: "Enter stock symbol or company name (e.g., AAPL or Apple)"
+                        helper_text: "Type to see suggestions"
+                        helper_text_mode: "persistent"
                         background_color: 1, 1, 1, 1
-                        size_hint: 1, 2
+                        size_hint: 1, 1
                         font_size: "20sp"
                         on_text_validate: root.get_stock_data(self.text.upper())
+                        on_text: root.auto_complete(self,self.text)
+                        adaptive_height: True 
 
             
             # HR-LINE
