@@ -57,13 +57,20 @@ def fetch_stock_news_worker(ticker):
 
         formatted_news = []
         for news in news_list:
-            # print(json.dumps(news, indent=2)) # for log
+            # print(json.dumps(news, indent=2))  # for log
             content = news.get("content", {})
+            print("before content")
+            print(content)
             # Get nested value from obj
             click_through_obj = content.get("clickThroughUrl", {})
-            click_through_url = click_through_obj.get("url", "unknow")
+            if click_through_obj is not None:
+                click_through_url = click_through_obj.get("url", "unknow")
+            else:
+                click_through_url = "unknow"
+            print("after 2 content")
 
-            provider = content.get("provider", {}).get("url", "Unknown Source")
+            provider_obj = content.get("provider", {})
+            provider_url = provider_obj.get("url", "Unknown Source")
             title = content.get("title", "No Title")
             summary = content.get("summary", "No Summary")
             pubDate = content.get("pubDate", "1970-01-01T00:00:00Z")
@@ -77,7 +84,7 @@ def fetch_stock_news_worker(ticker):
             formatted_news.append(
                 {
                     "click_through_url": click_through_url,
-                    "provider": provider,
+                    "provider": provider_url,
                     "title": title,
                     "summary": summary,
                     "pubDate": pubDate_formatted,
